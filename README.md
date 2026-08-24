@@ -10,4 +10,6 @@ The current prototype is the self-contained [lifecyclecompass.html](lifecyclecom
 
 Automated regression tests and build-time integrity stamping are planned before the `-rc` suffix is removed.
 
+Run the current regression suite with `npm test`.
+
 See [LifecycleCompass-D-001-Directive.md](LifecycleCompass-D-001-Directive.md) and [GOVERNANCE.md](GOVERNANCE.md) for scope, guardrails, and verification requirements.

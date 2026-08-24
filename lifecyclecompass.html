@@ -768,6 +768,7 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:3px soli
 
 <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">↑</button>
 
+<script src="lifecyclecompass-core.js"></script>
 <script>
 /* ---------- EVIDENCE STATE MODEL ---------- */
 const EVIDENCE_STATES = [
@@ -1098,10 +1099,7 @@ function critState(ringId, idx){
   return sel ? sel.value : 'not_assessed';
 }
 function stateToGate(state){
-  if(state==='evidence'||state==='accepted'||state==='na') return 'pass';
-  if(state==='partial') return 'attention';
-  if(state==='gap') return 'fail';
-  return 'undetermined'; // not_assessed, undetermined
+  return LifecycleCompassCore.stateToGate(state);
 }
 const SOUP_RING = {id:'soup', name:'SOUP / Third-Party Model Control', weight:4};
 const CRITICAL_GATES = [
@@ -1124,16 +1122,9 @@ const CRITICAL_GATES = [
 ];
 
 function ringAggregate(ringId, itemCount){
-  let sumW=0, denom=0, unresolved=0;
-  for(let i=0;i<itemCount;i++){
-    const st = critState(ringId, i);
-    const stObj = evStateOf(st);
-    if(stObj.na) continue;
-    denom++;
-    sumW += stObj.weight;
-    if(st==='not_assessed'||st==='undetermined') unresolved++;
-  }
-  return {pct: denom ? Math.round((sumW/denom)*100) : 0, denom, unresolved};
+  const states = [];
+  for(let i=0;i<itemCount;i++) states.push(critState(ringId, i));
+  return LifecycleCompassCore.ringAggregate(states);
 }
 
 function recompute(){
@@ -1465,13 +1456,7 @@ const POSTMARKET_LAYERS = [
 function pccpStatus(){
   const ai = document.getElementById('p-ai')?.value || 'locked';
   const mod = document.getElementById('p-modstrategy')?.value || 'manual';
-  // Deterministic combination table — independent axes, not AI-type alone
-  if(mod==='unknown') return {state:'undetermined', text:"Unable to determine — planned modification strategy not yet defined."};
-  if(mod==='none') return {state:'not_indicated', text:"PCCP not currently indicated — no planned postmarket model modification declared."};
-  if(ai==='continuous' || ai==='adaptive') return {state:'applicable', text:"PCCP potentially applicable — continuous/adaptive AI presence combined with a planned modification strategy."};
-  if(mod==='manual' || mod==='periodic' || mod==='autoglobal' || mod==='localadaptive') return {state:'applicable', text:"PCCP potentially applicable — a locked model with a planned postmarket modification process can still warrant PCCP analysis (FD&C Act §515C is not limited to autonomously-learning systems)."};
-  if(mod==='thirdparty') return {state:'analysis_required', text:"PCCP analysis required — update behavior sits outside manufacturer direct control; manufacturer-side change-control obligations still need explicit assessment."};
-  return {state:'undetermined', text:"Unable to determine from current profile."};
+  return LifecycleCompassCore.pccpStatus(ai, mod);
 }
 function renderPostmarket(){
   const pccp = pccpStatus();

@@ -1,0 +1,10 @@
+{
+  "name": "lifecyclecompass",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/core.test.cjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
