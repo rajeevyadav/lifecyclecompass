@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifecycleCompass v1.0.0 — Nested Lifecycle &amp; Traceability Navigator for AI-Enabled Medical Devices</title>
+<style>
+:root{
+  --teal:#5b47e0;
+  --teal-dark:#4636b3;
+  --teal-light:#8577ea;
+  --bg:#f7f8fc;
+  --panel:#ffffff;
+  --ink:#181c2a;
+  --ink-soft:#5b6072;
+  --border:#e1e3ee;
+  --warn:#b5651d;
+  --warn-bg:#fdf1e6;
+  --danger:#a33a3a;
+  --danger-bg:#fbeaea;
+  --ok:#1f7a4d;
+  --ok-bg:#e9f6ee;
+  --pending:#8a6d00;
+  --pending-bg:#fbf6df;
+  --chip-bg:#eeeefb;
+  --radius:10px;
+  --shadow:0 1px 2px rgba(20,15,60,.06), 0 4px 14px rgba(20,15,60,.06);
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color-scheme: light;
+}
+html[data-theme="dark"]{
+  --bg:#0d0e16;
+  --panel:#151726;
+  --ink:#eceefa;
+  --ink-soft:#a6a9c2;
+  --border:#282b42;
+  --chip-bg:#1c1f34;
+  --warn-bg:#2c2013;
+  --danger-bg:#2c1414;
+  --ok-bg:#0f2a1c;
+  --pending-bg:#2a2410;
+  color-scheme: dark;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.5;
+}
+.mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;}
+a{color:var(--teal);}
+header.top{
+  background:linear-gradient(120deg,var(--teal-dark),var(--teal));
+  color:#fff; padding:22px 20px 26px;
+}
+.brand h1{font-weight:700;}
+.brand h1 .accent{color:#fff;opacity:.9;}
+.top-inner{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+.brand{display:flex;align-items:center;gap:12px;}
+.emblem{
+  width:42px;height:42px;border-radius:50%;border:2px solid rgba(255,255,255,.85);
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
+  background:rgba(255,255,255,.08);
+}
+.brand h1{font-size:20px;margin:0;letter-spacing:.2px;}
+.brand .fam{font-size:11.5px;text-transform:uppercase;letter-spacing:1.2px;opacity:.85;margin-top:2px;}
+.top-actions{display:flex;gap:8px;align-items:center;}
+
+.btn{
+  border:1px solid rgba(255,255,255,.5); background:rgba(255,255,255,.08); color:#fff;
+  padding:7px 12px;border-radius:8px;font-size:13px;cursor:pointer;
+}
+.btn:hover{background:rgba(255,255,255,.18);}
+.badge-ver{
+  font-size:11px; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.35);
+  padding:3px 8px;border-radius:20px;
+}
+.disclaimer{
+  max-width:1280px;margin:14px auto 0;background:rgba(0,0,0,.14);
+  border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:10px 14px;font-size:12.5px;
+}
+nav.tabs{
+  max-width:1280px;margin:0 auto;padding:0 20px;display:flex;gap:4px;flex-wrap:wrap;
+  border-bottom:1px solid var(--border); background:var(--panel);
+}
+nav.tabs button{
+  border:none;background:none;color:var(--ink-soft);padding:12px 14px;font-size:13.5px;
+  cursor:pointer;border-bottom:3px solid transparent;font-weight:600;
+}
+nav.tabs button.active{color:var(--teal-dark);border-bottom-color:var(--teal);}
+html[data-theme="dark"] nav.tabs button.active{color:var(--teal-light);}
+main{max-width:1280px;margin:0 auto;padding:22px 20px 80px;}
+.grid{display:grid;grid-template-columns:1fr;gap:18px;}
+@media(min-width:980px){ .grid.dual{grid-template-columns:1.05fr .95fr;} }
+.panel{
+  background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+  padding:18px 18px 20px;box-shadow:var(--shadow);
+}
+.panel h2{margin:0 0 4px;font-size:17px;font-family:var(--serif);font-weight:700;}
+.panel .sub{color:var(--ink-soft);font-size:12.5px;margin-bottom:14px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px;}
+select, input[type=text]{
+  width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;
+  background:var(--bg);color:var(--ink);font-size:13.5px;
+}
+.chipset{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{
+  border:1px solid var(--border);background:var(--chip-bg);color:var(--ink-soft);
+  padding:6px 10px;border-radius:20px;font-size:12.5px;cursor:pointer;user-select:none;
+}
+.chip.on{background:var(--teal);color:#fff;border-color:var(--teal);}
+.stack{display:flex;flex-direction:column;gap:10px;}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.small{font-size:12px;color:var(--ink-soft);}
+hr.sep{border:none;border-top:1px solid var(--border);margin:16px 0;}
+
+/* Nested lifecycle rings */
+.rings{display:flex;flex-direction:column;gap:10px;}
+.ring{
+  border:1px solid var(--border);border-radius:9px;padding:12px 14px;background:var(--bg);
+}
+.ring.dim{opacity:.45;}
+.ring-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+.ring-head b{font-size:13.5px;}
+.ring-crit{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.crit-item{display:flex;gap:8px;align-items:flex-start;font-size:12.8px;}
+.crit-item input{margin-top:3px;}
+.ev-row{display:flex;gap:8px;align-items:center;font-size:12.6px;padding:5px 0;border-bottom:1px dashed var(--border);}
+.ev-row:last-child{border-bottom:none;}
+.ev-row .ev-text{flex:1;}
+.src-tag{font-size:9px;font-weight:800;letter-spacing:.3px;padding:2px 6px;border-radius:4px;margin-right:6px;display:inline-block;vertical-align:middle;cursor:help;}
+.src-reg{background:#3a2fae22;color:#5b47e0;border:1px solid #5b47e0;}
+.src-std{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok);}
+.src-guid{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn);}
+.src-draft{background:var(--pending-bg);color:var(--pending);border:1px solid var(--pending);}
+.src-ed{background:var(--chip-bg);color:var(--ink-soft);border:1px solid var(--border);}
+.ev-row select{width:auto;min-width:168px;font-size:11.8px;padding:5px 6px;}
+.ev-row select.st-evidence{background:var(--ok-bg);color:var(--ok);border-color:var(--ok);}
+.ev-row select.st-partial{background:var(--warn-bg);color:var(--warn);border-color:var(--warn);}
+.ev-row select.st-gap{background:var(--danger-bg);color:var(--danger);border-color:var(--danger);}
+.ev-row select.st-undetermined{background:var(--pending-bg);color:var(--pending);border-color:var(--pending);}
+.ev-row select.st-na, .ev-row select.st-accepted, .ev-row select.st-not_assessed{background:var(--chip-bg);}
+.gate-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;font-size:12.6px;}
+.gate-badge{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;}
+.gate-badge.pass{background:var(--ok-bg);color:var(--ok);}
+.gate-badge.attention{background:var(--warn-bg);color:var(--warn);}
+.gate-badge.fail{background:var(--danger-bg);color:var(--danger);}
+.gate-badge.undetermined{background:var(--pending-bg);color:var(--pending);}
+.readiness-banner{padding:16px;border-radius:10px;font-weight:800;font-size:16px;text-align:center;margin-bottom:14px;}
+.readiness-banner.green{background:var(--ok-bg);color:var(--ok);border:2px solid var(--ok);}
+.readiness-banner.amber{background:var(--warn-bg);color:var(--warn);border:2px solid var(--warn);}
+.readiness-banner.red{background:var(--danger-bg);color:var(--danger);border:2px solid var(--danger);}
+.readiness-banner.grey{background:var(--chip-bg);color:var(--ink-soft);border:2px solid var(--border);}
+.dim-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px;}
+.dim-card{border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
+.dim-card .num{font-size:24px;font-weight:800;}
+.dim-card .lbl{font-size:10.5px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+.pct{font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;}
+.pct.good{background:var(--ok-bg);color:var(--ok);}
+.pct.mid{background:var(--warn-bg);color:var(--warn);}
+.pct.bad{background:var(--danger-bg);color:var(--danger);}
+
+/* Interface arrows */
+.iface{border:1px dashed var(--border);border-radius:9px;padding:10px 12px;font-size:12.5px;margin-top:8px;background:var(--bg);}
+.iface .status{font-weight:700;font-size:11px;padding:2px 8px;border-radius:20px;display:inline-block;margin-left:6px;}
+.status.controlled{background:var(--ok-bg);color:var(--ok);}
+.status.gap{background:var(--danger-bg);color:var(--danger);}
+.status.partial{background:var(--warn-bg);color:var(--warn);}
+
+table{width:100%;border-collapse:collapse;font-size:12.8px;}
+th,td{border-bottom:1px solid var(--border);padding:8px 8px;text-align:left;vertical-align:top;}
+th{color:var(--ink-soft);text-transform:uppercase;font-size:11px;letter-spacing:.4px;}
+.status-tag{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:20px;white-space:nowrap;}
+.status-tag.published{background:var(--ok-bg);color:var(--ok);}
+.status-tag.draft{background:var(--pending-bg);color:var(--pending);}
+.status-tag.pas{background:var(--warn-bg);color:var(--warn);}
+.verify-flag{font-size:11px;color:var(--danger);font-weight:600;}
+
+.score-hero{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.score-circle{
+  width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;font-weight:800;font-size:22px;border:6px solid var(--teal);color:var(--teal-dark);
+}
+.score-circle span{font-size:10px;font-weight:600;color:var(--ink-soft);}
+html[data-theme="dark"] .score-circle{color:var(--teal-light);}
+
+.obs{border-left:3px solid var(--danger);background:var(--danger-bg);padding:8px 10px;border-radius:0 7px 7px 0;font-size:12.5px;margin-bottom:8px;}
+.obs.partial{border-left-color:var(--warn);background:var(--warn-bg);}
+
+.footer-links{max-width:1280px;margin:0 auto;padding:20px;display:flex;flex-wrap:wrap;gap:8px;}
+.fam-card{
+  border:1px solid var(--border);background:var(--panel);border-radius:9px;padding:10px 12px;
+  font-size:12.5px;flex:1 1 150px;
+}
+.fam-card b{display:block;font-size:13px;margin-bottom:2px;}
+
+.trace-row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;align-items:center;font-size:11.6px;text-align:center;}
+.trace-node{background:var(--chip-bg);border:1px solid var(--border);border-radius:7px;padding:8px 6px;}
+.trace-arrow{color:var(--ink-soft);font-size:16px;}
+
+.export-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.btn2{
+  background:var(--teal-dark);color:#fff;border:none;padding:10px 16px;border-radius:8px;
+  font-size:13px;cursor:pointer;font-weight:700;
+}
+.btn2:hover{background:#000;}
+.btn2.secondary{background:var(--chip-bg);color:var(--ink);border:1px solid var(--border);}
+.foot-note{font-size:11.5px;color:var(--ink-soft);margin-top:6px;}
+.scroll-top{
+  position:fixed;bottom:22px;right:22px;width:46px;height:46px;border-radius:50%;
+  background:var(--teal-dark);color:#fff;border:none;font-size:18px;cursor:pointer;
+  box-shadow:var(--shadow);z-index:50;display:flex;align-items:center;justify-content:center;
+}
+.scroll-top:hover{background:#000;}
+::-webkit-scrollbar{width:9px;height:9px;}
+
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px;}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px;}
+button:focus-visible, input:focus-visible, select:focus-visible{outline:3px solid var(--teal);outline-offset:1px;}
+
+@media print{
+  nav.tabs, .scroll-top, .btn, .export-bar{display:none !important;}
+  header.top{background:#fff !important;color:#000 !important;}
+  main > section{display:block !important;page-break-after:always;}
+  .panel{box-shadow:none;border:1px solid #ccc;}
+  body{background:#fff;}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="emblem">🧭</div>
+      <div>
+        <h1>Lifecycle<span class="accent">Compass</span></h1>
+        <div class="fam">Compass Family · Nested Lifecycle &amp; Traceability Navigator</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <span class="badge-ver mono" id="verMarker">v2.0.0-rc4 · build 2026-08-22 · reverted provenance-disclosure inserts · commit: pending</span>
+      <button class="btn" onclick="toggleTheme()" aria-label="Toggle dark and light theme">🌓 Theme</button>
+    </div>
+  </div>
+  <div class="disclaimer">
+    <b>Decision-support only — not a conformity assessment.</b> LifecycleCompass assesses completeness and cross-layer coherence
+    of AI-enabled medical device lifecycle processes against a curated, dated standards library. It does not determine conformity,
+    assess clinical/scientific validity, replace risk management or design controls, or constitute a regulatory opinion.
+    Every standard reference carries a status and last-verified date — <b>always verify against the current official document.</b>
+  </div>
+</header>
+
+<nav class="tabs" id="tabNav" role="tablist" aria-label="LifecycleCompass sections">
+  <button class="active" data-tab="scope">0 · Scope &amp; Limitations</button>
+  <button data-tab="profiler">1 · Profiler</button>
+  <button data-tab="lifecycle">2 · Nested Lifecycle</button>
+  <button data-tab="soup">3 · SOUP &amp; Foundation Models</button>
+  <button data-tab="standards">4 · Standards Library</button>
+  <button data-tab="traceability">5 · Interfaces &amp; Traceability</button>
+  <button data-tab="qms">6 · QMS / AI-MS Overlay</button>
+  <button data-tab="cyber">6b · Cybersecurity Cross-Link</button>
+  <button data-tab="clinical">6c · Clinical Evidence Cross-Link</button>
+  <button data-tab="aiact">6d · EU AI Act Overlay</button>
+  <button data-tab="postmarket">6e · Change &amp; Postmarket Control</button>
+  <button data-tab="report">7 · Readiness &amp; Report</button>
+  <button data-tab="family">Compass Family</button>
+  <button data-tab="glossary">Glossary</button>
+</nav>
+
+<main>
+
+<!-- ============ TAB 0: SCOPE & LIMITATIONS ============ -->
+<section id="tab-scope" class="grid dual">
+  <div class="panel">
+    <h2>Intended Use</h2>
+    <p style="font-size:13.5px;">LifecycleCompass is a decision-support tool that assists qualified users in assessing the completeness and cross-layer coherence of the development and lifecycle processes applied to AI-enabled medical devices (including SaMD and software that is part of a medical device). It operates on a multi-axis device/AI profile and produces structured observations, gap lists, and traceability views against a curated set of verified standards and process expectations.</p>
+    <h3 style="font-size:13.5px;margin-bottom:6px;">Target users</h3>
+    <ul style="font-size:13px;padding-left:18px;margin-top:0;">
+      <li>Manufacturer regulatory affairs, quality, and software/AI development personnel</li>
+      <li>Independent regulatory consultants</li>
+      <li>Notified Body / regulatory authority assessors (as an aid, not a substitute for independent judgment)</li>
+    </ul>
+    <h3 style="font-size:13.5px;margin-bottom:6px;">Explicit limitations</h3>
+    <ul style="font-size:13px;padding-left:18px;margin-top:0;">
+      <li>Does not perform conformity assessment or issue any form of certificate or opinion</li>
+      <li>Does not assess the scientific or clinical validity of data, models, or performance claims</li>
+      <li>Does not replace the manufacturer's own risk management, design controls, or clinical evaluation</li>
+      <li>Does not contain the full normative text of any standard — users must obtain and verify the current official documents</li>
+      <li><b>Jurisdiction scope: EU MDR + FDA only.</b> UK MHRA, Health Canada, and other national frameworks are not yet covered in this version — this is a stated limitation, not an oversight</li>
+      <li>IVD-specific processes are out of scope</li>
+      <li>Continuous-learning / adaptive systems are supported only at the process-control level; detailed algorithmic monitoring requirements remain manufacturer responsibility</li>
+      <li><b>LLM / generative-AI-based devices: the tool's primary ML risk standard (ISO/TS 24971-2) explicitly excludes LLM and generative-AI models from its scope.</b> If your device profile involves an LLM or generative-AI component, treat AI-layer risk guidance in this tool as incomplete — no dedicated risk-management standard for LLM-based medical devices currently exists. See the flag in §1 Profiler and §4 Standards Library.</li>
+    </ul>
+    <h3 style="font-size:13.5px;margin-bottom:6px;">Residual risk statement</h3>
+    <p style="font-size:13px;">Even when used correctly, LifecycleCompass may produce incomplete or misleading outputs if: the device/AI profile is incorrectly entered; referenced standards have been updated since the last library verification; or the user treats tool-generated observations as definitive regulatory findings. The manufacturer (or user organisation) remains fully responsible for the adequacy of its processes and technical documentation. The tool is an aid only.</p>
+  </div>
+  <div class="panel">
+    <h2>Who this tool is (and isn't) for</h2>
+    <p style="font-size:13px;">This build aims to be usable by anyone touching an AI-enabled medical device's lifecycle documentation — not only Notified Body assessors. If regulatory jargon in the other tabs is unclear, the <b>Glossary</b> tab (top navigation) defines every acronym used across the tool in plain language.</p>
+    <p style="font-size:13px;">This tool is <b>not</b> a substitute for legal or regulatory advice, and is not a certification pathway. If you are preparing an actual submission, engage a qualified regulatory professional or Notified Body.</p>
+    <hr class="sep">
+    <h3 style="font-size:13.5px;margin-bottom:6px;">Rule-provenance tag legend</h3>
+    <p class="small">Every criterion across §2, §3, §6b, §6c, §6e is tagged with where it comes from — never left visually indistinguishable:</p>
+    <p style="font-size:12.5px;line-height:2;">
+      <span class="src-tag src-reg">REG</span> Law / regulation (e.g. EU MDR article, FD&amp;C Act section)<br>
+      <span class="src-tag src-std">STD</span> Published consensus standard (e.g. ISO 14971, IEC 62304)<br>
+      <span class="src-tag src-guid">GUID</span> Regulatory guidance document (e.g. MDCG, FDA guidance)<br>
+      <span class="src-tag src-draft">DRAFT</span> Draft / emerging standard — not yet final<br>
+      <span class="src-tag src-ed">ED</span> LifecycleCompass editorial judgment — no single normative citation exists for this item; it reflects general good practice, not a rule you can point to in an audit
+    </p>
+    <hr class="sep">
+    <h3 style="font-size:13.5px;margin-bottom:6px;">Version history</h3>
+    <p class="small">v2.0.0-rc3 (this build): rule-provenance tags on every criterion, assessment-date staleness flagging, Article 6 AI Act routing field, FDA cybersecurity citation corrected to the 27 Jun 2025 final guidance (was citing the superseded 2023 version).<br>
+    v2.0.0-rc2: P0 architecture revision — evidence states replacing checkboxes, non-compensatory critical gates, 4-dimension readiness dashboard, PCCP redesign, EU AI Act Overlay tab, Change &amp; Postmarket Control tab, JSON export.<br>
+    v2.0.0-rc1: added Scope &amp; Limitations tab, Glossary, PCCP criterion, LLM/generative-AI scope flag, print stylesheet, accessibility pass, jurisdiction-scope disclosure.<br>
+    v1.0.0-rc1: cybersecurity + clinical cross-links added, standards re-verified, duplicate SOUP checklist reconciled.<br>
+    v0.1: initial 7-module build from spec.</p>
+  </div>
+</section>
+
+<!-- ============ TAB 1: PROFILER ============ -->
+<section id="tab-profiler" class="grid" style="display:none;">
+  <div class="panel">
+    <h2>Device &amp; AI Profile</h2>
+    <div class="sub">Multi-axis, independent, combinable — each axis activates or deactivates layer checks and standards downstream. Nothing here is a single dropdown.</div>
+
+    <div class="field">
+      <label>Device intended use (free text)</label>
+      <input type="text" id="p-intendeduse" placeholder="e.g. AI-assisted detection of diabetic retinopathy from fundus images">
+      <div class="small" style="margin-top:6px;">Feeds Critical Gate 1 (§7) — an undefined intended use is treated as a hard gate failure, not a minor omission.</div>
+    </div>
+
+    <div class="field">
+      <label>Base regulatory class</label>
+      <select id="p-class">
+        <option value="I">EU Class I</option>
+        <option value="Ir">EU Class Ir</option>
+        <option value="Im">EU Class Im</option>
+        <option value="Is">EU Class Is</option>
+        <option value="IIa" selected>EU Class IIa</option>
+        <option value="IIb">EU Class IIb</option>
+        <option value="III">EU Class III</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>FDA pathway</label>
+      <select id="p-fda">
+        <option value="none">Not applicable / EU-only filing</option>
+        <option value="510k" selected>510(k)</option>
+        <option value="denovo">De Novo</option>
+        <option value="pma">PMA</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>AI presence &amp; type</label>
+      <select id="p-ai">
+        <option value="none">None — no AI/ML component</option>
+        <option value="locked" selected>Locked model (no post-deployment learning)</option>
+        <option value="continuous">Continuous learning</option>
+        <option value="adaptive">Adaptive (with human oversight)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Model type</label>
+      <select id="p-modeltype">
+        <option value="traditional" selected>Traditional ML (classification/regression/CNN etc.)</option>
+        <option value="llm">LLM / generative AI</option>
+      </select>
+      <div class="small" id="llmWarning" style="display:none;margin-top:6px;color:var(--danger);">
+        ⚠ ISO/TS 24971-2 explicitly excludes LLM/generative-AI models from its scope. No dedicated ML risk-management standard currently covers this category — treat AI-layer risk guidance in this tool as incomplete for this profile.
+      </div>
+    </div>
+    <div class="field">
+      <label>Planned modification strategy</label>
+      <select id="p-modstrategy">
+        <option value="none">No planned postmarket model modification</option>
+        <option value="manual" selected>Manufacturer-controlled manual update</option>
+        <option value="periodic">Periodic retraining and release</option>
+        <option value="autoglobal">Automatic global update</option>
+        <option value="localadaptive">Locally adaptive update</option>
+        <option value="thirdparty">Third-party/foundation-model update outside manufacturer direct control</option>
+        <option value="unknown">Unknown / not yet defined</option>
+      </select>
+      <div class="small" style="margin-top:6px;">Drives PCCP relevance independently of the AI-type field — a "locked" model with a planned manual update process can still warrant PCCP analysis. See §6e.</div>
+    </div>
+    <div class="field">
+      <label>Foundation / third-party model treated as SOUP</label>
+      <div class="chipset">
+        <div class="chip on" id="p-soup-yes" onclick="setSoup(true)">Yes</div>
+        <div class="chip" id="p-soup-no" onclick="setSoup(false)">No</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Hardware presence &amp; criticality</label>
+      <select id="p-hw">
+        <option value="none">None</option>
+        <option value="noncritical">Non-critical</option>
+        <option value="critical" selected>Critical (IEC 60601 relevance)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Software safety classification (IEC 62304)</label>
+      <select id="p-sw">
+        <option value="A">Class A</option>
+        <option value="B" selected>Class B</option>
+        <option value="C">Class C</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Connectivity</label>
+      <select id="p-conn">
+        <option value="standalone">Standalone</option>
+        <option value="networked">Networked</option>
+        <option value="cloud" selected>Cloud</option>
+        <option value="wireless">Wireless</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Data characteristics</label>
+      <div class="chipset" id="p-data">
+        <div class="chip on" data-v="patient">Patient data</div>
+        <div class="chip" data-v="rwd">Real-world data</div>
+        <div class="chip" data-v="synthetic">Synthetic</div>
+        <div class="chip" data-v="public">Public datasets</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Clinical data pathway</label>
+      <select id="p-clin">
+        <option value="own" selected>Own clinical data</option>
+        <option value="equivalence">Equivalence</option>
+        <option value="literature">Literature</option>
+        <option value="legacy">Legacy</option>
+      </select>
+    </div>
+    <hr class="sep">
+    <div class="field">
+      <label>EU AI Act applicability</label>
+      <select id="p-aiact-applies">
+        <option value="undetermined" selected>Undetermined — insufficient information</option>
+        <option value="yes">Yes — potentially applicable</option>
+        <option value="no">No — not an AI system under the Act, or fully excluded</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>AI Act risk tier (if applicable)</label>
+      <select id="p-aiact-tier">
+        <option value="undetermined" selected>Undetermined</option>
+        <option value="annex3">High-risk — Annex III (standalone), deferred to 2 Dec 2027</option>
+        <option value="annex1">High-risk — Annex I (embedded in regulated product), deferred to 2 Aug 2028</option>
+        <option value="limited">Limited-risk (transparency obligations only — Art.50)</option>
+        <option value="minimal">Minimal/no AI Act risk-tier obligations</option>
+      </select>
+      <div class="small" style="margin-top:6px;">EU device class does not by itself determine AI Act tier — this is a deliberately separate axis. See §6d.</div>
+    </div>
+    <div class="field">
+      <label>Article 6 route (if determinable)</label>
+      <select id="p-aiact-art6">
+        <option value="undetermined" selected>Not yet determined</option>
+        <option value="art6-1">Art.6(1) — safety component/product covered by Annex I sectorial legislation (e.g. medical devices) + third-party conformity assessment required</option>
+        <option value="art6-2">Art.6(2) — Annex III standalone high-risk use case</option>
+        <option value="not-highrisk">Not high-risk under Article 6</option>
+      </select>
+      <div class="small" style="margin-top:6px;">High-level routing only — this tool does not parse full Article 6 sub-clause detail. Medical devices requiring NB conformity assessment typically route via Art.6(1); confirm with qualified counsel, this is not a legal determination.</div>
+    </div>
+    <div class="field">
+      <label>Assessment date</label>
+      <input type="text" id="p-assessdate" value="" placeholder="YYYY-MM-DD">
+      <div class="small" style="margin-top:6px;">Stamped onto exported reports — standards status and deadlines should be re-checked against this date, not assumed current indefinitely.</div>
+    </div>
+    <button class="btn2" onclick="applyProfile()">Apply profile → update applicability matrix</button>
+    <div class="foot-note">Applying the profile recalculates which lifecycle-layer checks, standards, and interface checks are active across all tabs.</div>
+  </div>
+
+  <div class="panel">
+    <h2>Applicability Matrix (live)</h2>
+    <div class="sub">Generated from the current profile. This is what drives every other module.</div>
+    <div class="stack" id="matrixOut"></div>
+  </div>
+</section>
+
+<!-- ============ TAB 2: NESTED LIFECYCLE ============ -->
+<section id="tab-lifecycle" class="grid" style="display:none;">
+  <div class="panel" style="grid-column:1/-1;">
+    <h2>Nested Lifecycle Diagram</h2>
+    <div class="sub">Redrawn from the reference diagram — same six concentric layers, same standards call-outs, same SOUP / foundation-model cluster and AI Data → AI Model hand-off at the bottom. Layers dim automatically when a layer is not applicable to the current profile (see §1).</div>
+    <div style="overflow-x:auto;">
+      <svg id="lifecycleSvg" viewBox="0 0 1180 900" style="width:100%;min-width:760px;max-width:1180px;display:block;margin:0 auto;font-family:inherit;">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--ink-soft)"></path>
+          </marker>
+        </defs>
+        <!-- top boxes -->
+        <g class="mono">
+          <rect x="230" y="16" width="200" height="70" rx="8" fill="none" stroke="var(--border)"></rect>
+          <text x="330" y="40" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">AI Management Lifecycle</text>
+          <text x="330" y="56" text-anchor="middle" font-size="9.5" fill="var(--ink-soft)">(healthcare-specific version</text>
+          <text x="330" y="68" text-anchor="middle" font-size="9.5" fill="var(--ink-soft)">of ISO 42001 — in development)</text>
+
+          <rect x="480" y="16" width="170" height="70" rx="8" fill="none" stroke="var(--border)"></rect>
+          <text x="565" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">ISO 13485</text>
+          <text x="565" y="58" text-anchor="middle" font-size="10" fill="var(--ink-soft)">Quality Management System</text>
+
+          <line x1="430" y1="50" x2="480" y2="50" stroke="var(--border)" stroke-dasharray="4 3"></line>
+          <line x1="330" y1="86" x2="330" y2="130" stroke="var(--ink-soft)" marker-end="url(#arrow)"></line>
+          <line x1="565" y1="86" x2="565" y2="130" stroke="var(--ink-soft)" marker-end="url(#arrow)"></line>
+
+          <!-- left standards -->
+          <rect x="10" y="150" width="150" height="42" rx="7" fill="none" stroke="var(--border)"></rect>
+          <text x="85" y="176" text-anchor="middle" font-size="11" fill="var(--ink)">ISO 60601 series</text>
+          <line x1="160" y1="171" x2="300" y2="171" stroke="var(--ink-soft)" marker-end="url(#arrow)"></line>
+
+          <rect x="10" y="215" width="150" height="46" rx="7" fill="#e9f6ee" stroke="var(--ok)"></rect>
+          <text x="85" y="235" text-anchor="middle" font-size="11" fill="var(--ink)">IEC 82304 Software</text>
+          <text x="85" y="249" text-anchor="middle" font-size="11" fill="var(--ink)">Validation</text>
+          <line x1="160" y1="238" x2="300" y2="255" stroke="var(--ink-soft)" marker-end="url(#arrow)"></line>
+
+          <rect x="10" y="285" width="150" height="46" rx="7" fill="#e9f6ee" stroke="var(--ok)"></rect>
+          <text x="85" y="305" text-anchor="middle" font-size="11" fill="var(--ink)">IEC 62304 Health</text>
+          <text x="85" y="319" text-anchor="middle" font-size="11" fill="var(--ink)">Software SDLC</text>
+          <line x1="160" y1="308" x2="330" y2="340" stroke="var(--ink-soft)" marker-end="url(#arrow)"></line>
+
+          <rect x="0" y="365" width="170" height="56" rx="7" fill="none" stroke="var(--border)"></rect>
+          <text x="85" y="386" text-anchor="middle" font-size="11" fill="var(--ink)">AI Healthcare Specific</text>
+          <text x="85" y="399" text-anchor="middle" font-size="11" fill="var(--ink)">Standards e.g. IEC 63450</text>
+          <line x1="170" y1="393" x2="345" y2="430" stroke="var(--ink-soft)" marker-end="url(#arrow)"></line>
+        </g>
+
+        <!-- concentric rings -->
+        <g text-anchor="middle">
+          <circle id="svg-product" cx="565" cy="470" r="270" fill="var(--bg)" stroke="var(--border)"></circle>
+          <text x="565" y="215" font-size="14" font-weight="700" fill="var(--ink)">Medical Device at Product Level</text>
+
+          <circle id="svg-hwsys" cx="565" cy="490" r="225" fill="#e9edee" fill-opacity=".35" stroke="var(--border)"></circle>
+          <text x="565" y="278" font-size="13" font-weight="700" fill="var(--ink)">Software System with Hardware</text>
+
+          <circle id="svg-swsys" cx="565" cy="510" r="180" fill="var(--teal)" fill-opacity=".13" stroke="var(--teal)"></circle>
+          <text x="565" y="342" font-size="12.5" font-weight="700" fill="var(--teal-dark)">Software System Lifecycle</text>
+
+          <circle id="svg-swdev" cx="565" cy="530" r="132" fill="#e6a817" fill-opacity=".16" stroke="#c78a10"></circle>
+          <text x="565" y="410" font-size="12" font-weight="700" fill="#8a6408">Software Development Lifecycle</text>
+
+          <circle id="svg-aidev" cx="565" cy="555" r="85" fill="#f2d7c9" fill-opacity=".5" stroke="#c4805a"></circle>
+          <text x="565" y="500" font-size="11.5" font-weight="700" fill="#8a4d2e">AI Development Lifecycle</text>
+
+          <circle id="svg-aidata" cx="565" cy="600" r="42" fill="#f4c542" fill-opacity=".7" stroke="#c78a10"></circle>
+          <text x="565" y="590" font-size="9.5" font-weight="700" fill="#5c4404">AI Data</text>
+          <text x="565" y="602" font-size="9.5" font-weight="700" fill="#5c4404">Management</text>
+          <text x="565" y="614" font-size="9.5" font-weight="700" fill="#5c4404">Lifecycle</text>
+        </g>
+
+        <!-- right side: product output -->
+        <g class="mono">
+          <line x1="835" y1="300" x2="905" y2="235" stroke="var(--ink-soft)" marker-end="url(#arrow)"></line>
+          <rect x="905" y="150" width="150" height="90" rx="6" fill="none" stroke="var(--border)"></rect>
+          <text x="980" y="205" text-anchor="middle" font-size="11" font-weight="700" fill="var(--ink)">Medical Device Product</text>
+
+          <circle cx="1000" cy="470" r="70" fill="none" stroke="var(--border)"></circle>
+          <text x="1000" y="465" text-anchor="middle" font-size="10.5" fill="var(--ink)">Integrated</text>
+          <text x="1000" y="479" text-anchor="middle" font-size="10.5" fill="var(--ink)">Software System</text>
+          <line x1="790" y1="530" x2="935" y2="480" stroke="var(--ink-soft)" marker-end="url(#arrow)"></line>
+          <line x1="1000" y1="400" x2="1000" y2="245" stroke="var(--ink-soft)" marker-end="url(#arrow)"></line>
+
+          <circle cx="990" cy="655" r="58" fill="var(--teal)" fill-opacity=".12" stroke="var(--teal)"></circle>
+          <text x="990" y="652" text-anchor="middle" font-size="10" fill="var(--teal-dark)">SOUP</text>
+          <text x="990" y="666" text-anchor="middle" font-size="9" fill="var(--teal-dark)">Software Items</text>
+          <circle cx="945" cy="700" r="34" fill="#c23aa0" fill-opacity=".18" stroke="#a02485"></circle>
+          <text x="945" y="698" text-anchor="middle" font-size="8" fill="#7a1c68">Foundation</text>
+          <text x="945" y="708" text-anchor="middle" font-size="8" fill="#7a1c68">Model as SOUP</text>
+          <line x1="945" y1="666" x2="960" y2="620" stroke="var(--ink-soft)" marker-end="url(#arrow)"></line>
+          <line x1="990" y1="597" x2="990" y2="560" stroke="var(--ink-soft)" marker-end="url(#arrow)"></line>
+        </g>
+
+        <!-- bottom: AI Data / AI Model boxes -->
+        <g class="mono">
+          <line x1="565" y1="642" x2="565" y2="700" stroke="var(--ink-soft)"></line>
+          <line x1="565" y1="700" x2="340" y2="770" stroke="var(--ink-soft)" marker-end="url(#arrow)"></line>
+          <line x1="565" y1="700" x2="565" y2="770" stroke="var(--ink-soft)" marker-end="url(#arrow)"></line>
+
+          <rect x="260" y="775" width="160" height="60" rx="8" fill="var(--chip-bg)" stroke="var(--border)"></rect>
+          <text x="340" y="800" text-anchor="middle" font-size="11" fill="var(--ink)">AI Data (as a</text>
+          <text x="340" y="814" text-anchor="middle" font-size="11" fill="var(--ink)">configuration item)</text>
+
+          <rect x="490" y="775" width="180" height="60" rx="8" fill="#f4e2b8" stroke="#c78a10"></rect>
+          <text x="580" y="800" text-anchor="middle" font-size="11" fill="var(--ink)">AI Model(s) as a</text>
+          <text x="580" y="814" text-anchor="middle" font-size="11" fill="var(--ink)">Software Item(s)</text>
+
+          <line x1="420" y1="805" x2="490" y2="805" stroke="var(--ink-soft)" marker-end="url(#arrow)"></line>
+          <line x1="900" y1="700" x2="670" y2="805" stroke="var(--ink-soft)" marker-end="url(#arrow)"></line>
+        </g>
+      </svg>
+    </div>
+    <div class="foot-note">Diagram scales/dims with the active profile — currently rendered as a static reference layout; interactive checklists for each layer follow below.</div>
+  </div>
+
+  <div class="panel" style="grid-column:1/-1;">
+    <h2>Nested Lifecycle Engine — Layer Detail</h2>
+    <div class="sub">Each layer: purpose, typical failure mode, and completeness criteria. Check off evidence present in your technical documentation; the percentage and per-layer weight (criticality-weighted, inner layers weighted higher — see §7 Score &amp; Report) feed the coherence score.</div>
+    <div class="rings" id="ringsOut"></div>
+  </div>
+</section>
+
+<!-- ============ TAB 3: SOUP ============ -->
+<section id="tab-soup" class="grid dual" style="display:none;">
+  <div class="panel">
+    <h2>SOUP &amp; Foundation Model Module</h2>
+    <div class="sub">Lightweight in v1.0.0 per closed open question — classification + impact-analysis flag rather than a full standalone checklist, to avoid overlap with CyberCompass/ClinicalCompass.</div>
+    <div class="stack" id="soupOut"></div>
+  </div>
+  <div class="panel">
+    <h2>Score impact of SOUP status</h2>
+    <div class="sub">Closes the gap flagged before build: how Module 3 (SOUP) feeds Module 7 (scoring).</div>
+    <p style="font-size:13px;">
+      When <b>Foundation/third-party model = Yes (SOUP)</b>, the AI Data Management Lifecycle and AI Development Lifecycle rings
+      each receive one additional mandatory criterion — <i>SOUP anomaly list &amp; impact analysis on record</i> — and the
+      per-layer weight for those two rings is raised by one weight class (see §7). This reflects that unverified provenance
+      or update behaviour in a foundation model propagates upward through every layer above it.
+    </p>
+    <p style="font-size:13px;">
+      Foundation-model SOUP items that lack a documented anomaly list or version-pinning policy are surfaced as a
+      <b>High</b>-severity observation in §7, not a routine gap — consistent with the "no risk of overlooking cascading
+      failure" requirement.
+    </p>
+  </div>
+</section>
+
+<!-- ============ TAB 4: STANDARDS LIBRARY ============ -->
+<section id="tab-standards" class="grid" style="display:none;">
+  <div class="panel" style="grid-column:1/-1;">
+    <h2>Strictly Curated Standards Reference Library</h2>
+    <div class="sub">
+      Policy: only entries verifiable against primary or high-quality secondary sources. Every row carries status and
+      last-verified date. Normative text is never reproduced — this library cites metadata and scope only.
+      <b>Verify every entry against the current official document before relying on it.</b>
+    </div>
+    <table id="stdTable"></table>
+    <div class="foot-note">Excluded until independently verified: any document number not confirmable against a primary source (e.g. an unconfirmed "IEC 63767" reference is deliberately not listed).</div>
+  </div>
+</section>
+
+<!-- ============ TAB 5: TRACEABILITY ============ -->
+<section id="tab-traceability" class="grid" style="display:none;">
+  <div class="panel" style="grid-column:1/-1;">
+    <h2>Interface &amp; Traceability Engine</h2>
+    <div class="sub">Core differentiator. Every critical hand-off between layers must show explicit evidence of control — this is where nested-lifecycle documentation most often breaks in practice.</div>
+
+    <div class="trace-row" style="margin-bottom:6px;">
+      <div class="trace-node">AI Data<br><span class="small">(config item)</span></div>
+      <div class="trace-arrow">→</div>
+      <div class="trace-node">AI Model(s)<br><span class="small">(software item)</span></div>
+      <div class="trace-arrow">→</div>
+      <div class="trace-node">Software Item /<br>SOUP control</div>
+    </div>
+    <div class="trace-row">
+      <div class="trace-node">Software System</div>
+      <div class="trace-arrow">→</div>
+      <div class="trace-node">Integrated<br>Software System</div>
+      <div class="trace-arrow">→</div>
+      <div class="trace-node">Medical Device<br>Product</div>
+    </div>
+
+    <hr class="sep">
+    <div id="ifaceOut"></div>
+  </div>
+</section>
+
+<!-- ============ TAB 6: QMS OVERLAY ============ -->
+<section id="tab-qms" class="grid dual" style="display:none;">
+  <div class="panel">
+    <h2>ISO 13485 QMS Overlay</h2>
+    <div class="stack" id="qmsOut1"></div>
+  </div>
+  <div class="panel">
+    <h2>AI Management System Overlay</h2>
+    <div class="sub">ISO/IEC 42001 + emerging healthcare-specific adaptation, tracked as draft/in-development, not treated as settled.</div>
+    <div class="stack" id="qmsOut2"></div>
+  </div>
+</section>
+
+<!-- ============ TAB 6b: CYBERSECURITY CROSS-LINK ============ -->
+<section id="tab-cyber" class="grid" style="display:none;">
+  <div class="panel" style="grid-column:1/-1;">
+    <h2>Cybersecurity Cross-Link</h2>
+    <div class="sub">Per spec §4 Module 8 — lightweight in v1.0.0 by design: LifecycleCompass surfaces where cybersecurity controls attach to each lifecycle layer, it does not duplicate CyberCompass's full 11-jurisdiction clause library. For deep per-country cybersecurity assessment, use CyberCompass (see Compass Family tab).</div>
+    <div class="rings" id="cyberOut"></div>
+  </div>
+</section>
+
+<!-- ============ TAB 6c: CLINICAL EVIDENCE CROSS-LINK ============ -->
+<section id="tab-clinical" class="grid" style="display:none;">
+  <div class="panel" style="grid-column:1/-1;">
+    <h2>Clinical Evidence Cross-Link</h2>
+    <div class="sub">Per spec §4 Module 8 — lightweight in v1.0.0 by design, mirroring the Cybersecurity Cross-Link: surfaces where clinical evidence obligations attach to each lifecycle layer without duplicating ClinicalCompass's full CER/PMCF/PSUR module set. For deep clinical evaluation work, use ClinicalCompass (see Compass Family tab).</div>
+    <div class="rings" id="clinicalOut"></div>
+  </div>
+</section>
+
+<!-- ============ TAB 6d: EU AI ACT OVERLAY ============ -->
+<section id="tab-aiact" class="grid" style="display:none;">
+  <div class="panel" style="grid-column:1/-1;">
+    <h2>EU AI Act Overlay</h2>
+    <div class="sub">Maps AI Act obligation groups onto controls that already exist elsewhere in this tool, and surfaces only the unresolved delta — the design principle is: do not build a second parallel QMS, map into the existing lifecycle wherever possible. Per §1 Profiler, applicability and risk tier can both be set to "Undetermined" rather than forcing a conclusion the profile doesn't support.</div>
+    <div id="aiActApplicabilityOut" style="margin-bottom:14px;"></div>
+    <table id="aiActTable"></table>
+  </div>
+</section>
+
+<!-- ============ TAB 6e: CHANGE & POSTMARKET CONTROL ============ -->
+<section id="tab-postmarket" class="grid" style="display:none;">
+  <div class="panel" style="grid-column:1/-1;">
+    <h2>Change &amp; Postmarket Control</h2>
+    <div class="sub">The nested-lifecycle diagram is primarily development-oriented; AI-enabled devices need explicit control after deployment too. This module covers performance monitoring, drift, change triggers, retraining control, rollback, PMS/CAPA integration, and retirement.</div>
+    <div id="pccpStatusOut" style="margin-bottom:14px;"></div>
+    <div class="rings" id="postmarketOut"></div>
+  </div>
+</section>
+
+<!-- ============ TAB 7: SCORE & REPORT ============ -->
+<section id="tab-report" class="grid" style="display:none;">
+  <div class="panel" style="grid-column:1/-1;">
+    <h2>Readiness &amp; Report</h2>
+    <div class="sub">A single composite score can let many minor passes numerically offset one fundamental gap. This dashboard instead separates four dimensions and applies non-compensatory critical gates — a gate failure caps the overall readiness regardless of how high the numeric dimensions read. All indicators are editorial decision-support measures, not conformity scores or statistically validated measures.</div>
+    <div id="readinessBanner"></div>
+    <div class="dim-grid" id="dimGrid"></div>
+    <h3 style="font-size:13.5px;margin-bottom:8px;">Critical gates (non-compensatory)</h3>
+    <div id="gatesOut"></div>
+    <hr class="sep">
+    <h3 style="margin-top:0;font-size:14px;">Regulator-style observations (auto-generated)</h3>
+    <div id="obsOut"></div>
+    <div class="export-bar">
+      <button class="btn2" onclick="exportCSV()">Export CSV</button>
+      <button class="btn2" onclick="exportJSON()">Export JSON</button>
+      <button class="btn2 secondary" onclick="window.print()">Print / Export PDF</button>
+    </div>
+    <div class="foot-note">Export Compliance File follows the same neutral, professionally-worded query pattern used across the Compass family (DocCompass precedent) — it raises questions for the manufacturer to resolve, it does not assert non-conformity.</div>
+  </div>
+</section>
+
+<!-- ============ FAMILY TAB ============ -->
+<section id="tab-family" class="grid" style="display:none;">
+  <div class="panel" style="grid-column:1/-1;">
+    <h2>Compass Family</h2>
+    <div class="sub">LifecycleCompass is one tool in a family of free, offline, deterministic (no black-box AI in the assessment logic) decision-support tools. Each is independent — v1.0.0 duplicates rather than imports across tools.</div>
+    <div class="footer-links">
+      <div class="fam-card"><b>RegCompass</b>General dual-market (FDA/EU) regulatory navigator — the family's original tool.</div>
+      <div class="fam-card"><b>CyberCompass</b>Deep medical device cybersecurity requirements across 11 jurisdictions.</div>
+      <div class="fam-card"><b>eIFUCompass</b>IFU / labeling / electronic-IFU compliance, FDA + EU MDR.</div>
+      <div class="fam-card"><b>ClinicalCompass</b>Clinical evaluation (EU) / clinical evidence (FDA) navigator.</div>
+      <div class="fam-card"><b>DocCompass</b>Technical documentation completeness &amp; traceability (Annex II/III + STED).</div>
+      <div class="fam-card"><b>LifecycleCompass</b><i>This tool.</i> Nested AI/software/product lifecycle traceability.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GLOSSARY ============ -->
+<section id="tab-glossary" class="grid" style="display:none;">
+  <div class="panel" style="grid-column:1/-1;">
+    <h2>Glossary</h2>
+    <div class="sub">Plain-language definitions for every acronym and technical term used across this tool — built so the tool is usable by people outside a regulatory-affairs background, not only specialists.</div>
+    <table id="glossaryTable"></table>
+  </div>
+</section>
+
+</main>
+
+<button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">↑</button>
+
+<script>
+/* ---------- EVIDENCE STATE MODEL ---------- */
+const EVIDENCE_STATES = [
+  {v:'not_assessed', label:'Not assessed', weight:0, na:false},
+  {v:'evidence', label:'Evidence available', weight:1, na:false},
+  {v:'partial', label:'Partial evidence', weight:0.5, na:false},
+  {v:'gap', label:'Gap', weight:0, na:false},
+  {v:'undetermined', label:'Unable to determine', weight:0, na:false},
+  {v:'accepted', label:'Accepted residual limitation', weight:1, na:false},
+  {v:'na', label:'Not applicable — justification required', weight:0, na:true},
+];
+function evOptions(){
+  return EVIDENCE_STATES.map(s=>`<option value="${s.v}">${s.label}</option>`).join('');
+}
+function srcTitle(cls){
+  return {REG:'Law / regulation',STD:'Published consensus standard',GUID:'Regulatory guidance document',DRAFT:'Draft / emerging standard — not yet final',ED:'LifecycleCompass editorial judgment — no single normative citation'}[cls]||'';
+}
+function evRow(text, ringId, idx){
+  let tagHtml = '', body = text;
+  const m = text.match(/^\[(REG|STD|GUID|DRAFT|ED)(?:·([^\]]*))?\]\s*/);
+  if(m){
+    const cls = m[1], ref = m[2]||'';
+    tagHtml = `<span class="src-tag src-${cls.toLowerCase()}" title="${srcTitle(cls)}${ref?': '+ref:''}">${cls}</span>`;
+    body = text.slice(m[0].length);
+  }
+  const savedState = window._lcEvidenceStates?.[ringId+'-'+idx] || 'not_assessed';
+  return `<div class="ev-row">
+    <span class="ev-text">${tagHtml}${body}</span>
+    <select class="st-${savedState}" data-ring="${ringId}" data-idx="${idx}" onchange="onEvChange(this)">${evOptions().replace(`value="${savedState}"`, `value="${savedState}" selected`)}</select>
+  </div>`;
+}
+function onEvChange(sel){
+  window._lcEvidenceStates = window._lcEvidenceStates || {};
+  window._lcEvidenceStates[sel.dataset.ring+'-'+sel.dataset.idx] = sel.value;
+  sel.className = 'st-'+sel.value;
+  recompute();
+}
+function evStateOf(v){ return EVIDENCE_STATES.find(s=>s.v===v) || EVIDENCE_STATES[0]; }
+
+/* ---------- TAB SWITCHING ---------- */
+document.querySelectorAll('#tabNav button').forEach(btn=>{
+  btn.setAttribute('role','tab');
+  btn.setAttribute('aria-selected', btn.classList.contains('active') ? 'true':'false');
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('#tabNav button').forEach(b=>{b.classList.remove('active'); b.setAttribute('aria-selected','false');});
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected','true');
+    document.querySelectorAll('main > section').forEach(s=>s.style.display='none');
+    document.getElementById('tab-'+btn.dataset.tab).style.display='';
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+/* ---------- THEME ---------- */
+function toggleTheme(){
+  const html=document.documentElement;
+  html.setAttribute('data-theme', html.getAttribute('data-theme')==='dark' ? 'light':'dark');
+}
+
+/* ---------- DATA CHIPS ---------- */
+document.querySelectorAll('#p-data .chip').forEach(c=>{
+  c.addEventListener('click',()=>c.classList.toggle('on'));
+});
+let soupFlag = true;
+function setSoup(v){
+  soupFlag = v;
+  document.getElementById('p-soup-yes').classList.toggle('on', v);
+  document.getElementById('p-soup-no').classList.toggle('on', !v);
+}
+
+/* ---------- STANDARDS LIBRARY (verified, dated — mirrors spec §5 exactly) ---------- */
+const STANDARDS = [
+  {doc:"ISO 13485", title:"Medical devices — Quality management systems", status:"published", layer:"Product / QMS overlay", verified:"2026-08-22"},
+  {doc:"IEC 62304", title:"Medical device software — Software life cycle processes", status:"published", layer:"Software Development Lifecycle", verified:"2026-08-22", note:"Ed.1 + Amd published; Ed.2 with AI provisions in progress — confirm stage before use"},
+  {doc:"IEC 82304-1", title:"Health software — Pt.1 General requirements for product safety", status:"published", layer:"Software System", verified:"2026-08-22"},
+  {doc:"ISO 14971", title:"Medical devices — Application of risk management", status:"published", layer:"All layers (risk)", verified:"2026-08-22"},
+  {doc:"IEC 62366-1", title:"Medical devices — Application of usability engineering", status:"published", layer:"All layers (usability)", verified:"2026-08-22"},
+  {doc:"IEC 60601 series", title:"Medical electrical equipment — basic safety &amp; essential performance", status:"published", layer:"Hardware-present devices", verified:"2026-08-22"},
+  {doc:"IEC PAS 63621:2026", title:"AI-enabled medical devices — Data management", status:"pas", layer:"AI Data Management Lifecycle", verified:"2026-08-22", note:"PAS — framework for the data lifecycle used to train/test/validate AI models"},
+  {doc:"ISO/TS 24971-2:2026", title:"Guidance on ISO 14971 — Pt.2 Machine learning in AI", status:"published", layer:"Risk management across AI layers", verified:"2026-08-22", note:"Published 2026-06-17. Does not apply to LLM/generative-AI-based devices — scope excludes those explicitly."},
+  {doc:"ISO/IEC 42001", title:"Artificial intelligence — Management system", status:"published", layer:"AI Management Lifecycle / QMS overlay", verified:"2026-08-22", note:"Healthcare-specific adaptation ongoing — not yet published"},
+  {doc:"EN 18286:2026", title:"AI — Quality management system for EU AI Act regulatory purposes (formerly prEN 18286)", status:"published", layer:"AI Act + QMS alignment", verified:"2026-08-22", note:"Approved &amp; published by CEN-CENELEC 2026-07-12. Not yet cited in the Official Journal of the EU — no presumption of conformity under Art.40 until cited. AI Act Annex III (standalone) high-risk obligations deferred to 2 Dec 2027 by the Digital Omnibus (Reg. (EU) 2026/1744, in force 27 Jul 2026); Annex I (embedded) obligations deferred to 2 Aug 2028 — confirm which annex applies to your device. Verify OJEU citation status before relying on this standard for conformity purposes."},
+  {doc:"IEC 63450", title:"Testing of AI/ML-enabled Medical Devices", status:"draft", layer:"Verification &amp; validation", verified:"2026-08-22", note:"Confirmed still under development as of this verification pass — stage varies by part"},
+  {doc:"IEC 63521", title:"AI/ML-enabled Medical Device — Performance Evaluation Process", status:"draft", layer:"Performance evaluation", verified:"2026-08-22", note:"Confirmed still under development as of this verification pass"},
+  {doc:"IEC/IEEE 63685", title:"Post-market surveillance of machine-learning-enabled medical devices", status:"draft", layer:"Product level / PMS", verified:"2026-08-22", note:"Newly added — under development. Directly relevant to the Product-level ring's PMS criterion."},
+  {doc:"IEC TS 62366-3", title:"Usability engineering — guidance for AI-based medical devices", status:"draft", layer:"All layers (usability, AI-specific)", verified:"2026-08-22", note:"Newly added — under development. Extends IEC 62366-1 with AI-specific usability guidance."},
+];
+function statusClass(s){ if(s==='published') return 'published'; if(s==='pas') return 'pas'; return 'draft'; }
+function renderStandards(){
+  const ai = document.getElementById('p-ai')?.value || 'locked';
+  const hw = document.getElementById('p-hw')?.value || 'critical';
+  const modeltype = document.getElementById('p-modeltype')?.value || 'traditional';
+  const assessDate = document.getElementById('p-assessdate')?.value;
+  const assessD = assessDate ? new Date(assessDate) : null;
+  let rows = `<tr><th>Document</th><th>Title</th><th>Status</th><th>Relevant layer</th><th>Last verified</th></tr>`;
+  STANDARDS.forEach(s=>{
+    const applies = standardApplies(s, ai, hw);
+    const llmExcluded = (s.doc==='ISO/TS 24971-2:2026' && modeltype==='llm');
+    let staleFlag = '';
+    if(assessD){
+      const vDate = new Date(s.verified.length===7 ? s.verified+'-01' : s.verified);
+      const days = Math.round((assessD - vDate)/86400000);
+      if(days>90) staleFlag = `<div class="verify-flag">⚠ ${days}d since last-verified — re-verify recommended</div>`;
+    }
+    rows += `<tr style="${applies?'':'opacity:.35;'}">
+      <td class="mono"><b>${s.doc}</b>${applies?'':' <span class="small">(not applicable — profile)</span>'}${llmExcluded?' <span class="verify-flag">⚠ excludes LLM/genAI</span>':''}</td>
+      <td>${s.title}${s.note?`<div class="small" style="margin-top:3px;">${s.note}</div>`:''}</td>
+      <td><span class="status-tag ${statusClass(s.status)}">${s.status.toUpperCase()}</span></td>
+      <td>${s.layer}</td>
+      <td class="mono">${s.verified}${s.status!=='published'?`<div class="verify-flag">verify before use</div>`:''}${staleFlag}</td>
+    </tr>`;
+  });
+  document.getElementById('stdTable').innerHTML = rows +
+    `<tr><td colspan="5" style="font-size:11.5px;color:var(--ink-soft);padding-top:10px;border-bottom:none;">
+      Supporting / guidance (metadata only, not scored): MDCG 2025-6 (MDR/IVDR–AI Act interplay) ·
+      IMDRF GMLP guiding principles · AAMI/BSI 34971 · ISO/IEC 5259 series (data quality for ML) ·
+      ISO/IEC 5338:2023 (AI system life cycle processes — architectural reference for this tool itself) ·
+      ISO/IEC 23894:2023 (AI risk-management guidance — supporting concepts only, never a substitute for ISO 14971) ·
+      ISO/IEC 42005:2025 (AI system impact assessment — supporting concepts only, distinct from clinical evaluation).
+      None of these three are treated as standalone medical-device conformity requirements.
+      Dimmed rows are inactive for the current profile (§1) but remain listed for transparency.
+      No standard currently covers LLM/generative-AI-specific risk management — see §0 Scope.
+      Regulatory watch (not scored): IMDRF AI lifecycle-management work · FDA GenAI-enabled device discussion material · CEN-CENELEC JTC 21 EN 1828x family (bias, fundamental-rights guidance) — track for future library inclusion, not yet verified to the same bar as the table above.
+    </td></tr>`;
+}
+renderStandards();
+
+/* ---------- NESTED LIFECYCLE RINGS ---------- */
+const RINGS = [
+  {id:"aidata", name:"AI Data Management Lifecycle", weightBase:5,
+    purpose:"Controls the data used to train, tune, test, and validate the AI model — the innermost layer because every downstream layer inherits its errors.",
+    failure:"Most common failure mode: datasets are used and re-used informally with no version record, so a model change can no longer be traced back to what data produced it.",
+    crit:["[ED] Training/test/validation datasets identified and versioned",
+          "[ED] Data provenance and consent/licensing basis documented",
+          "[STD·IEC PAS 63621] Data quality &amp; representativeness assessment on record",
+          "[ED] Known data limitations / population coverage gaps documented",
+          "[ED] Data pre-processing and labelling procedure recorded and repeatable",
+          "[STD·IEC 62304 §8] AI Data formally treated as a configuration item with version control"]},
+  {id:"aidev", name:"AI Development Lifecycle", weightBase:5,
+    purpose:"Controls how the model itself is built and evaluated — architecture choices, training runs, and performance evidence.",
+    failure:"Common failure mode: performance is evaluated once at release and never re-linked to the specific data version and training run that produced it.",
+    crit:["[ED] Model architecture, training method and hyperparameters documented",
+          "[STD·IEC 62304 §8] Model versioning scheme defined and applied",
+          "[DRAFT·IEC 63521] Performance evaluation protocol defined",
+          "[STD·ISO/TS 24971-2] ML-specific risk analysis performed",
+          "[ED] Model card / summary linking each model version to its training data version",
+          "[ED] Retraining / update trigger criteria defined (locked vs continuous-learning models)"]},
+  {id:"swdev", name:"Software Development Lifecycle (IEC 62304)", weightBase:4,
+    purpose:"Controls the conventional software engineering around the model — the AI Development Lifecycle sits inside this as a specialised activity, not a replacement for it.",
+    failure:"Common failure mode: the AI/ML activities are documented separately from the IEC 62304 file, so the two never demonstrably connect.",
+    crit:["[STD·IEC 62304 §4.3] Software safety classification (A/B/C) assigned and justified",
+          "[STD·IEC 62304] Software development plan covers all IEC 62304 activities for the assigned class",
+          "[ED] Software requirements trace to the AI Development Lifecycle outputs (model as software item)",
+          "[STD·IEC 62304 §5] Unit/integration/system-level verification records exist",
+          "[STD·IEC 62304 §6/§8] Problem resolution / change control process operating (SOUP list itself lives in §3 SOUP module — not duplicated here)"]},
+  {id:"swsys", name:"Software System Lifecycle", weightBase:3,
+    purpose:"Controls the software system as a whole once individual items (including the AI model) are integrated together.",
+    failure:"Common failure mode: system-level validation is performed but doesn't explicitly re-confirm behaviour with the current AI model version installed.",
+    crit:["[STD·IEC 82304-1] Software system validated per IEC 82304-1",
+          "[ED] System-level requirements traced to software items",
+          "[STD·IEC 62366-1] Usability engineering file covers the software system",
+          "[ED] System-level regression testing repeated after any model update"]},
+  {id:"hwsys", name:"Software System with Hardware", weightBase:3,
+    purpose:"Controls the interface between the software system and any physical hardware it runs on or with — only active when hardware criticality is non-trivial.",
+    failure:"Common failure mode: hardware essential-performance verification predates the current software/AI version, so the pairing is no longer evidenced.",
+    crit:["[ED] Hardware/software interface requirements documented",
+          "[STD·IEC 60601 series] Essential performance &amp; basic safety addressed (where hardware is critical)",
+          "[ED] Integrated system verification evidence exists",
+          "[ED] Hardware compatibility matrix current for the deployed software/AI version"]},
+  {id:"product", name:"Medical Device at Product Level (ISO 13485)", weightBase:2,
+    purpose:"The outermost layer — the finished medical device product as placed on the market, governed by the manufacturer's QMS.",
+    failure:"Common failure mode: the product-level risk file references AI risks generically rather than pulling forward the specific ML risks identified at the inner layers.",
+    crit:["[STD·ISO 13485 §7.3] Product-level design controls close out (design history file complete)",
+          "[STD·ISO 14971] Risk management file covers the full product, not just software",
+          "[STD·ISO/TS 24971-2] Risk file explicitly incorporates ML-specific risks flagged at the AI layers",
+          "[STD·ISO 13485 §8] QMS process ownership assigned for post-market surveillance of the AI-enabled product",
+          "[REG·EU MDR Art.83-86] PMS process defined for monitoring AI/model performance drift after release"]},
+];
+function ringState(){
+  const soupExtra = soupFlag ? ["SOUP anomaly list &amp; foundation-model impact analysis on record"] : [];
+  const ai = document.getElementById('p-ai')?.value || 'locked';
+  const pccpExtra = (ai==='continuous'||ai==='adaptive') ? ["Predetermined Change Control Plan (PCCP) defined for post-deployment model changes (FDA §515C / EU equivalent pending)"] : [];
+  return RINGS.map(r=>{
+    let crit = r.crit.slice();
+    if((r.id==='aidata'||r.id==='aidev')) crit = crit.concat(soupExtra);
+    if(r.id==='aidev') crit = crit.concat(pccpExtra);
+    return {...r, crit, weight: (r.id==='aidata'||r.id==='aidev') && soupFlag ? r.weightBase+1 : r.weightBase};
+  });
+}
+function pctClass(p){ if(p>=80) return 'good'; if(p>=50) return 'mid'; return 'bad'; }
+function renderRings(){
+  const rings = ringState();
+  let html='';
+  rings.forEach(r=>{
+    const critHtml = r.crit.map((c,i)=>evRow(c, r.id, i)).join('');
+    html += `
+      <div class="ring" id="ring-${r.id}">
+        <div class="ring-head">
+          <b>${r.name}</b>
+          <span class="pct bad" id="pct-${r.id}">0%</span>
+        </div>
+        <div class="small">Weight: <span class="mono">${r.weight}</span> · items: ${r.crit.length}</div>
+        <div class="small" style="margin-top:6px;"><b>Purpose:</b> ${r.purpose}</div>
+        <div class="small" style="margin-top:2px;"><b>Typical failure mode:</b> ${r.failure}</div>
+        <div class="ring-crit">${critHtml}</div>
+      </div>`;
+  });
+  document.getElementById('ringsOut').innerHTML = html;
+}
+renderRings();
+
+/* ---------- SOUP TAB ---------- */
+function renderSoup(){
+  const soupCrit = [
+    "[ED] Foundation/third-party model formally classified as SOUP (or appropriate third-party-control category) in the technical file",
+    "[ED] Model source, owner, and hosting location (local vs remote) documented",
+    "[ED] Manufacturer's ability to freeze/pin the model version confirmed",
+    "[ED] Supplier notification mechanism for model changes documented",
+    "[STD·IEC 62304 §7-8] Known anomaly list maintained for the SOUP/third-party item",
+    "[ED] Impact analysis performed for each update reaching the software system",
+  ];
+  const critHtml = soupCrit.map((c,i)=>evRow(c,'soup',i)).join('');
+  const html = `
+    <div class="field"><label>SOUP / foundation-model status</label>
+      <div class="small">${soupFlag? "Flagged as present — classification and impact-analysis criteria are active on the AI Data and AI Development rings (§2)." : "Not flagged as present for this profile — toggle in §1 Profiler to activate SOUP-specific criteria."}</div>
+      <div class="small" style="margin-top:6px;">Treating every foundation/third-party model as identical SOUP is a simplification — a manufacturer-frozen fine-tuned model and a third-party API the supplier can update at will carry different risk. The items below cover ownership/control distinctions rather than a single binary classification.</div>
+    </div>
+    <div class="ring ${soupFlag?'':'dim'}" id="ring-soup">
+      <div class="ring-head"><b>SOUP / third-party model control checklist</b><span class="pct bad" id="pct-soup">0%</span></div>
+      <div class="ring-crit">${critHtml}</div>
+    </div>`;
+  document.getElementById('soupOut').innerHTML = html;
+}
+renderSoup();
+
+/* ---------- INTERFACES ---------- */
+const IFACES = [
+  {a:"AI Data (config item)", b:"AI Model(s) as Software Item(s)", key:"data-model"},
+  {a:"AI Model(s)", b:"Software Item / SOUP control", key:"model-soup"},
+  {a:"Software Item", b:"Software System", key:"item-system"},
+  {a:"Software System", b:"Integrated Software System / Product", key:"system-product"},
+  {a:"Any lower-layer change", b:"Upward impact analysis recorded", key:"change-impact"},
+  {a:"Data &amp; model versions", b:"Configuration status visible at product level", key:"config-status"},
+];
+function renderIfaces(){
+  let html='';
+  IFACES.forEach(f=>{
+    html += `
+      <div class="iface">
+        <b>${f.a} → ${f.b}</b>
+        <select onchange="recompute()" id="if-${f.key}" style="margin-top:6px;width:auto;display:inline-block;">
+          <option value="controlled">Controlled — evidence on file</option>
+          <option value="partial" selected>Partial — some evidence, incomplete</option>
+          <option value="gap">Gap — no evidence found</option>
+        </select>
+      </div>`;
+  });
+  document.getElementById('ifaceOut').innerHTML = html;
+}
+renderIfaces();
+
+/* ---------- QMS OVERLAY ---------- */
+function renderQMS(){
+  document.getElementById('qmsOut1').innerHTML = `
+    <label class="crit-item"><input type="checkbox" onchange="recompute()"><span>All six nested lifecycle layers sit under one documented QMS process map (ISO 13485)</span></label>
+    <label class="crit-item"><input type="checkbox" onchange="recompute()"><span>Design and development controls (Cl.7.3) explicitly reference the AI-specific lifecycle stages</span></label>
+    <label class="crit-item"><input type="checkbox" onchange="recompute()"><span>Post-market surveillance process covers AI model drift / performance monitoring</span></label>`;
+  document.getElementById('qmsOut2').innerHTML = `
+    <label class="crit-item"><input type="checkbox" onchange="recompute()"><span>AI Management System scope defined (ISO/IEC 42001) even if not yet certified</span></label>
+    <label class="crit-item"><input type="checkbox" onchange="recompute()"><span>Interface between AI-MS and ISO 13485 QMS documented (no orphaned AI governance process)</span></label>
+    <div class="verify-flag" style="margin-top:4px;">Healthcare-specific AI-MS adaptation is still in development — do not assume a finalized healthcare-specific standard exists.</div>`;
+}
+renderQMS();
+
+/* ---------- APPLICABILITY MATRIX ---------- */
+function applyProfile(){
+  const cls = document.getElementById('p-class').value;
+  const fda = document.getElementById('p-fda').value;
+  const ai = document.getElementById('p-ai').value;
+  const hw = document.getElementById('p-hw').value;
+  const sw = document.getElementById('p-sw').value;
+  const conn = document.getElementById('p-conn').value;
+  const clin = document.getElementById('p-clin').value;
+  const data = [...document.querySelectorAll('#p-data .chip.on')].map(c=>c.dataset.v);
+  const modeltype = document.getElementById('p-modeltype')?.value || 'traditional';
+  document.getElementById('llmWarning').style.display = (modeltype==='llm' && ai!=='none') ? 'block' : 'none';
+
+  const items = [];
+  items.push(`Base class <b class="mono">${cls}</b>${fda!=='none'?` / FDA <b class="mono">${fda}</b>`:''} — drives ISO 13485 rigor and product-level documentation depth.`);
+  items.push(ai==='none' ? `AI presence: <b>None</b> — AI Data Management and AI Development rings deactivated (dimmed), IEC PAS 63621 / ISO/TS 24971-2 / IEC 63450 / IEC 63521 not applicable.` : `AI presence: <b>${ai}</b> — AI Data Management and AI Development rings active; IEC PAS 63621, ISO/TS 24971-2, IEC 63450, IEC 63521 applicable.`);
+  if(ai!=='none') items.push(modeltype==='llm' ? `Model type: <b>LLM / generative AI</b> — ⚠ ISO/TS 24971-2 does not apply to this category; no dedicated ML risk-management standard currently exists for LLM-based devices. See §0 Scope for detail.` : `Model type: <b>Traditional ML</b> — ISO/TS 24971-2 applies as listed.`);
+  if(ai==='continuous' || ai==='adaptive') items.push(`Continuous/adaptive model selected — a <b>Predetermined Change Control Plan (PCCP)</b> criterion is now active on the AI Development ring (§2).`);
+  items.push(soupFlag ? `Foundation/third-party model treated as SOUP: <b>Yes</b> — SOUP module active, extra criteria applied to inner rings.` : `Foundation/third-party model treated as SOUP: <b>No</b> — SOUP module shown but criteria inactive.`);
+  items.push(hw==='none' ? `Hardware: <b>None</b> — IEC 60601 series and "Software System with Hardware" ring not applicable.` : `Hardware: <b>${hw}</b> — IEC 60601 series ${hw==='critical'?'applicable':'reference-only'}.`);
+  items.push(`Software safety classification: <b>Class ${sw}</b> — IEC 62304 rigor scaled accordingly (Class C carries the strictest verification bar).`);
+  items.push(`Connectivity: <b>${conn}</b> — ${conn==='cloud'||conn==='networked'?'cybersecurity cross-link (CyberCompass) recommended.':'lower cybersecurity cross-link priority.'}`);
+  items.push(`Clinical data pathway: <b>${clin}</b> — ${clin==='own'?'own clinical data expected to support AI Development Lifecycle performance claims.':'clinical-evidence cross-link (ClinicalCompass) recommended.'}`);
+  items.push(`Data characteristics: <b>${data.join(', ')||'none selected'}</b> — feeds AI Data Management Lifecycle provenance criteria.`);
+
+  document.getElementById('matrixOut').innerHTML = items.map(i=>`<div class="row" style="align-items:flex-start;"><span style="font-size:13px;">${i}</span></div>`).join('<hr class="sep" style="margin:8px 0;">');
+
+  // dim rings with no AI
+  document.querySelectorAll('.ring').forEach(r=>r.classList.remove('dim'));
+  ['svg-aidata','svg-aidev','svg-swdev','svg-swsys','svg-hwsys','svg-product'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.style.opacity='1';
+  });
+  if(ai==='none'){
+    ['ring-aidata','ring-aidev'].forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add('dim'); });
+    ['svg-aidata','svg-aidev'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.opacity='.25'; });
+  }
+  if(hw==='none'){
+    const el=document.getElementById('ring-hwsys'); if(el) el.classList.add('dim');
+    const svgEl=document.getElementById('svg-hwsys'); if(svgEl) svgEl.style.opacity='.25';
+  }
+  if(typeof renderStandards==='function') renderStandards();
+  if(typeof renderCyber==='function') renderCyber();
+  if(typeof renderClinical==='function') renderClinical();
+  if(typeof renderRings==='function') renderRings();
+  if(typeof renderSoup==='function') renderSoup();
+  if(typeof renderAiAct==='function') renderAiAct();
+  if(typeof renderPostmarket==='function') renderPostmarket();
+  recompute();
+}
+
+/* ---------- SCORING ---------- */
+function critState(ringId, idx){
+  const sel = document.querySelector(`select[data-ring="${ringId}"][data-idx="${idx}"]`);
+  return sel ? sel.value : 'not_assessed';
+}
+function stateToGate(state){
+  if(state==='evidence'||state==='accepted'||state==='na') return 'pass';
+  if(state==='partial') return 'attention';
+  if(state==='gap') return 'fail';
+  return 'undetermined'; // not_assessed, undetermined
+}
+const SOUP_RING = {id:'soup', name:'SOUP / Third-Party Model Control', weight:4};
+const CRITICAL_GATES = [
+  {id:'G1', label:'Intended use defined', desc:'Device intended use statement present and substantive (§1).',
+    evaluate: ()=>{ const v=(document.getElementById('p-intendeduse')?.value||'').trim(); if(!v) return 'fail'; if(v.length<15) return 'attention'; return 'pass'; }},
+  {id:'G2', label:'Risk-management linkage resolved', desc:'ISO 14971 risk file covers the full product (§2 Product ring).',
+    evaluate: ()=> stateToGate(critState('product',1))},
+  {id:'G3', label:'Model validation present', desc:'Performance evaluation protocol defined (§2 AI Development ring).',
+    evaluate: ()=> { if((document.getElementById('p-ai')?.value)==='none') return 'pass'; return stateToGate(critState('aidev',2)); }},
+  {id:'G4', label:'Clinical-evidence pathway justified', desc:'Chosen clinical pathway evidentiary basis documented (§6c).',
+    evaluate: ()=> stateToGate(critState('cl-clinpath',0))},
+  {id:'G5', label:'Cybersecurity SBOM control present', desc:'SBOM generated and maintained (§6b).',
+    evaluate: ()=> stateToGate(critState('cy-swdev',0))},
+  {id:'G6', label:'Third-party model update behavior bounded', desc:'Manufacturer can freeze/pin model version, or no third-party model flagged (§3).',
+    evaluate: ()=> { if(!soupFlag) return 'pass'; return stateToGate(critState('soup',2)); }},
+  {id:'G7', label:'Production data/model version controlled', desc:'AI Data treated as a configuration item with version control (§2 AI Data ring).',
+    evaluate: ()=> { if((document.getElementById('p-ai')?.value)==='none') return 'pass'; return stateToGate(critState('aidata',5)); }},
+  {id:'G8', label:'Postmarket monitoring strategy present', desc:'Performance-monitoring criterion addressed (§6e).',
+    evaluate: ()=> { if((document.getElementById('p-ai')?.value)==='none') return 'pass'; return stateToGate(critState('pm-perf',0)); }},
+];
+
+function ringAggregate(ringId, itemCount){
+  let sumW=0, denom=0, unresolved=0;
+  for(let i=0;i<itemCount;i++){
+    const st = critState(ringId, i);
+    const stObj = evStateOf(st);
+    if(stObj.na) continue;
+    denom++;
+    sumW += stObj.weight;
+    if(st==='not_assessed'||st==='undetermined') unresolved++;
+  }
+  return {pct: denom ? Math.round((sumW/denom)*100) : 0, denom, unresolved};
+}
+
+function recompute(){
+  const rings = ringState().concat(CYBER_LAYERS).concat(CLINICAL_LAYERS).concat(POSTMARKET_LAYERS.map(r=>({...r})));
+  rings.push({...SOUP_RING, crit:new Array(6)}); // soup pseudo-ring, 6 items per renderSoup()
+
+  let totalWeighted=0, maxWeighted=0;
+  let flatSum=0, flatDenom=0; // for Evidence Strength dimension (unweighted, all items)
+  let ringSummaries=[];
+
+  rings.forEach(r=>{
+    const itemCount = r.crit ? r.crit.length : 0;
+    const agg = ringAggregate(r.id, itemCount);
+    const pctEl = document.getElementById('pct-'+r.id);
+    if(pctEl){ pctEl.textContent = agg.pct+'%'; pctEl.className='pct '+pctClass(agg.pct); }
+    const dimmed = document.getElementById('ring-'+r.id)?.classList.contains('dim') ||
+                   (r.id==='soup' && !soupFlag);
+    if(!dimmed){
+      totalWeighted += (agg.pct/100)*r.weight;
+      maxWeighted += r.weight;
+      let section = "Nested Lifecycle";
+      if(CYBER_LAYERS.includes(r)) section = "Cybersecurity Cross-Link";
+      else if(CLINICAL_LAYERS.includes(r)) section = "Clinical Evidence Cross-Link";
+      else if(POSTMARKET_LAYERS.some(p=>p.id===r.id)) section = "Change & Postmarket Control";
+      else if(r.id==='soup') section = "SOUP / Third-Party Model Control";
+      ringSummaries.push({name:r.name, pct:agg.pct, weight:r.weight, section});
+    }
+    // flat (unweighted) accumulation for Evidence Strength dimension — include even dimmed rings' items only if not dimmed
+    if(!dimmed){
+      for(let i=0;i<itemCount;i++){
+        const st = critState(r.id, i);
+        const stObj = evStateOf(st);
+        if(stObj.na) continue;
+        flatDenom++; flatSum += stObj.weight;
+      }
+    }
+  });
+
+  // interface contribution
+  let ifCounts={controlled:0,partial:0,gap:0};
+  IFACES.forEach(f=>{
+    const v = document.getElementById('if-'+f.key)?.value || 'partial';
+    ifCounts[v]++;
+  });
+  const ifScore = (ifCounts.controlled*1 + ifCounts.partial*0.5) / IFACES.length;
+
+  // ---- Four dimensions ----
+  const lifecycleCompleteness = maxWeighted ? Math.round((totalWeighted/maxWeighted)*100) : 0;
+  const evidenceStrength = flatDenom ? Math.round((flatSum/flatDenom)*100) : 0;
+  const interfaceCoherence = Math.round(ifScore*100);
+  let pmSum=0, pmDenom=0;
+  POSTMARKET_LAYERS.forEach(r=>{ const a=ringAggregate(r.id, r.crit.length); if(a.denom){ pmSum+=a.pct; pmDenom++; } });
+  const changeReadiness = pmDenom ? Math.round(pmSum/pmDenom) : 0;
+
+  // ---- Critical gates ----
+  let gateResults = CRITICAL_GATES.map(g=>({...g, status:g.evaluate()}));
+  const anyFail = gateResults.some(g=>g.status==='fail');
+  const anyUndetermined = gateResults.some(g=>g.status==='undetermined');
+  const anyAttention = gateResults.some(g=>g.status==='attention');
+  const dims = [lifecycleCompleteness, evidenceStrength, interfaceCoherence, changeReadiness];
+  const anyLowDim = dims.some(d=>d<80);
+
+  let overallState, overallLabel;
+  if(anyFail){ overallState='red'; overallLabel='RED — one or more critical gates failed. Overall state cannot be Green regardless of numeric scores.'; }
+  else if(anyUndetermined){ overallState='grey'; overallLabel='GREY — insufficient information to assess one or more critical gates.'; }
+  else if(anyAttention || anyLowDim){ overallState='amber'; overallLabel='AMBER — no failed gates, but material limitations or gaps remain.'; }
+  else { overallState='green'; overallLabel='GREEN — no unresolved critical gates and strong evidence coverage across all dimensions.'; }
+
+  document.getElementById('readinessBanner').innerHTML = `<div class="readiness-banner ${overallState}">${overallLabel}</div>`;
+  document.getElementById('dimGrid').innerHTML = `
+    <div class="dim-card"><div class="num">${lifecycleCompleteness}</div><div class="lbl">Lifecycle Completeness</div></div>
+    <div class="dim-card"><div class="num">${evidenceStrength}</div><div class="lbl">Evidence Strength</div></div>
+    <div class="dim-card"><div class="num">${interfaceCoherence}</div><div class="lbl">Interface Coherence</div></div>
+    <div class="dim-card"><div class="num">${changeReadiness}</div><div class="lbl">Change Readiness</div></div>`;
+  document.getElementById('gatesOut').innerHTML = gateResults.map(g=>`
+    <div class="gate-row">
+      <div><b>${g.id} — ${g.label}</b><div class="small">${g.desc}</div></div>
+      <span class="gate-badge ${g.status}">${g.status.toUpperCase()}</span>
+    </div>`).join('');
+
+  // observations
+  let obs=[];
+  ringSummaries.forEach(r=>{
+    if(r.pct<50) obs.push(`<div class="obs"><b>${r.name}</b> (${r.section}) — completeness ${r.pct}%. Manufacturer should confirm supporting evidence exists for the unmet criteria in this layer; layer weight ${r.weight} reflects its cascading effect on layers above it.</div>`);
+    else if(r.pct<80) obs.push(`<div class="obs partial"><b>${r.name}</b> (${r.section}) — completeness ${r.pct}%. Partial evidence present; remaining items should be reviewed before this layer is treated as closed.</div>`);
+  });
+  IFACES.forEach(f=>{
+    const v = document.getElementById('if-'+f.key)?.value;
+    if(v==='gap') obs.push(`<div class="obs"><b>Interface gap:</b> ${f.a} → ${f.b}. No evidence of control found for this hand-off — this is the class of gap most often cited at review.</div>`);
+    else if(v==='partial') obs.push(`<div class="obs partial"><b>Interface partially controlled:</b> ${f.a} → ${f.b}. Evidence present but incomplete.</div>`);
+  });
+  gateResults.forEach(g=>{
+    if(g.status==='fail') obs.push(`<div class="obs"><b>Critical gate failed — ${g.id} ${g.label}.</b> ${g.desc} This gate is non-compensatory: no combination of passing scores elsewhere offsets it.</div>`);
+  });
+  document.getElementById('obsOut').innerHTML = obs.length ? obs.join('') : `<div class="small">No observations generated yet — set evidence states across §2, §3, §6b-e and §5 to populate this list.</div>`;
+
+  window._lcExportData = {
+    lifecycleCompleteness, evidenceStrength, interfaceCoherence, changeReadiness,
+    overallState, ringSummaries, ifCounts, gateResults,
+    aiActApplies: document.getElementById('p-aiact-applies')?.value,
+    aiActTier: document.getElementById('p-aiact-tier')?.value,
+    pccp: pccpStatus(),
+    assessDate: document.getElementById('p-assessdate')?.value,
+    intendedUse: document.getElementById('p-intendeduse')?.value,
+  };
+}
+
+/* ---------- EXPORT ---------- */
+function exportCSV(){
+  const d = window._lcExportData || {};
+  let rows = [["Section","Metric","Value"]];
+  rows.push(["Overall","Readiness state", (d.overallState||'').toUpperCase()]);
+  rows.push(["Overall","Lifecycle Completeness", (d.lifecycleCompleteness??0)+"/100"]);
+  rows.push(["Overall","Evidence Strength", (d.evidenceStrength??0)+"/100"]);
+  rows.push(["Overall","Interface Coherence", (d.interfaceCoherence??0)+"/100"]);
+  rows.push(["Overall","Change Readiness", (d.changeReadiness??0)+"/100"]);
+  rows.push(["Overall","PCCP status", d.pccp?.state||'']);
+  rows.push(["Overall","AI Act applicability", d.aiActApplies||'']);
+  rows.push(["Overall","AI Act risk tier", d.aiActTier||'']);
+  rows.push(["Overall","Assessment date", d.assessDate||'']);
+  (d.gateResults||[]).forEach(g=> rows.push(["Critical Gate", g.id+" — "+g.label, g.status.toUpperCase()]));
+  (d.ringSummaries||[]).forEach(r=> rows.push([r.section||"Nested Lifecycle", r.name, r.pct+"% (weight "+r.weight+")"]));
+  IFACES.forEach(f=>{
+    const v = document.getElementById('if-'+f.key)?.value;
+    rows.push(["Interface", f.a+" → "+f.b, v]);
+  });
+  STANDARDS.forEach(s=> rows.push(["Standards Library", s.doc, s.status+" — verified "+s.verified]));
+  const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob = new Blob([csv], {type:"text/csv"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download="lifecyclecompass-export-compliance-file.csv"; a.click();
+  URL.revokeObjectURL(url);
+}
+function exportJSON(){
+  const d = window._lcExportData || {};
+  const payload = {
+    toolVersion: "v2.0.0-rc3",
+    rulesetVersion: "LC-RULESET-2026.08.22.4",
+    standardsSnapshot: "2026-08-22",
+    assessmentDate: d.assessDate || '',
+    deviceProfile: {
+      intendedUse: d.intendedUse || '',
+      aiActApplies: d.aiActApplies, aiActTier: d.aiActTier,
+      pccpStatus: d.pccp?.state, pccpText: d.pccp?.text,
+    },
+    dimensions: {
+      lifecycleCompleteness: d.lifecycleCompleteness, evidenceStrength: d.evidenceStrength,
+      interfaceCoherence: d.interfaceCoherence, changeReadiness: d.changeReadiness,
+    },
+    overallReadiness: d.overallState,
+    criticalGates: (d.gateResults||[]).map(g=>({id:g.id, label:g.label, status:g.status})),
+    layers: (d.ringSummaries||[]).map(r=>({section:r.section, name:r.name, completenessPct:r.pct, weight:r.weight})),
+    interfaces: IFACES.map(f=>({from:f.a, to:f.b, status: document.getElementById('if-'+f.key)?.value})),
+    standardsLibrary: STANDARDS.map(s=>({doc:s.doc, status:s.status, lastVerified:s.verified})),
+    limitations: [
+      "Editorial decision-support tool — not a conformity assessment.",
+      "No independent third-party review has occurred as of this export.",
+      "Jurisdiction scope is EU MDR + FDA only.",
+      "No automated regression test suite protects this build — see Verification Protocol.",
+      "This export is not a cryptographically verifiable build artifact; treat as a self-reported snapshot only."
+    ]
+  };
+  const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download="lifecyclecompass-assessment.json"; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ---------- CYBERSECURITY CROSS-LINK ---------- */
+const CYBER_LAYERS = [
+  {id:"cy-aidata", name:"AI Data Management Lifecycle", weight:3,
+    note:"Data supply chain and storage security — the layer most exposed to data-poisoning and provenance-tampering risk.",
+    crit:["[ED] Training/validation data storage access-controlled and logged",
+          "[ED] Data pipeline integrity checks in place (tamper/poisoning detection)",
+          "[ED] Third-party/public dataset provenance risk assessed"]},
+  {id:"cy-aidev", name:"AI Development Lifecycle", weight:3,
+    note:"Model artefact security — protecting the trained model itself and its evaluation results from tampering.",
+    crit:["[ED] Model artefact integrity protected (signing / hash verification)",
+          "[ED] Adversarial-robustness / model-evasion risk considered",
+          "[ED] Model registry access-controlled with audit trail"]},
+  {id:"cy-swdev", name:"Software Development Lifecycle", weight:4,
+    note:"Secure development lifecycle controls per IEC 81001-5-1 and FDA's June 2025 premarket cybersecurity guidance.",
+    crit:["[REG·FD&amp;C Act §524B] SBOM (Software Bill of Materials) generated and maintained (incl. AI/ML libraries)",
+          "[STD·IEC 81001-5-1] Secure coding standard applied and verified",
+          "[GUID·FDA Cybersecurity Guidance, 27 Jun 2025] Static/dynamic vulnerability scanning performed pre-release",
+          "[REG·FD&amp;C Act §524B] Known-vulnerability monitoring process for third-party components / SOUP"]},
+  {id:"cy-swsys", name:"Software System Lifecycle", weight:3,
+    note:"System-level threat modelling once components are integrated.",
+    crit:["[STD·IEC 81001-5-1] Threat model covers the integrated software system, not just individual items",
+          "[ED] Penetration testing or equivalent performed at system level"]},
+  {id:"cy-conn", name:"Connectivity &amp; Cloud", weight:4,
+    note:"Active only when connectivity is networked/cloud/wireless — the layer FDA and EU MDCG 2019-16 scrutinise most.",
+    crit:["[GUID·MDCG 2019-16] Data-in-transit and data-at-rest encryption implemented",
+          "[GUID·MDCG 2019-16] Authentication/authorization scheme documented for networked access",
+          "[ED] Cloud service provider security posture assessed and on file"]},
+  {id:"cy-product", name:"Medical Device at Product Level", weight:3,
+    note:"Coordinated vulnerability disclosure and postmarket cybersecurity surveillance under the QMS.",
+    crit:["[REG·FD&amp;C Act §524B] Coordinated vulnerability disclosure process defined (postmarket)",
+          "[STD·ISO 14971] Cybersecurity risk explicitly linked into the risk management file",
+          "[GUID·FDA Cybersecurity Guidance, 27 Jun 2025] Patch/update deployment process defined for fielded devices, with 30-day known-vulnerability notification timeline"]},
+];
+function renderCyber(){
+  const conn = document.getElementById('p-conn')?.value;
+  let html='';
+  CYBER_LAYERS.forEach(r=>{
+    const dim = (r.id==='cy-conn' && conn==='standalone');
+    const critHtml = r.crit.map((c,i)=>evRow(c, r.id, i)).join('');
+    html += `
+      <div class="ring ${dim?'dim':''}" id="ring-${r.id}">
+        <div class="ring-head">
+          <b>${r.name}</b>
+          <span class="pct bad" id="pct-${r.id}">0%</span>
+        </div>
+        <div class="small">Weight: <span class="mono">${r.weight}</span> · items: ${r.crit.length}</div>
+        <div class="small" style="margin-top:6px;">${r.note}</div>
+        <div class="ring-crit">${critHtml}</div>
+      </div>`;
+  });
+  document.getElementById('cyberOut').innerHTML = html + `
+    <div class="foot-note" style="margin-top:4px;">Standards referenced: IEC 81001-5-1 (health software cybersecurity), FDA "Cybersecurity in Medical Devices: Quality System Considerations and Content of Premarket Submissions" (final guidance, 27 Jun 2025 — supersedes the 27 Sep 2023 version; implements FD&amp;C Act §524B "cyber device" requirements incl. mandatory SBOM), MDCG 2019-16, EU Cyber Resilience Act (phase-in). Verify no newer FDA guidance has superseded the June 2025 version by your assessment date. For jurisdiction-by-jurisdiction clause detail across 11 countries, use <b>CyberCompass</b>.</div>`;
+}
+renderCyber();
+
+/* ---------- CLINICAL EVIDENCE CROSS-LINK ---------- */
+const CLINICAL_LAYERS = [
+  {id:"cl-aidata", name:"AI Data Management Lifecycle", weight:3,
+    note:"Whether the training/validation data itself constitutes or supports clinical evidence.",
+    crit:["[GUID·IMDRF GMLP] Data source population characterised (representativeness of intended-use population)",
+          "[ED] Ground-truth / reference-standard labelling method documented"]},
+  {id:"cl-aidev", name:"AI Development Lifecycle", weight:3,
+    note:"Model performance evidence — the bridge between engineering validation and clinical evaluation.",
+    crit:["[REG·EU MDR Annex I §17.1] Performance metrics reported align with the clinical claims made (sensitivity/specificity/AUC as applicable)",
+          "[ED] Held-out test set independent from training data used for reported performance"]},
+  {id:"cl-swdev", name:"Software Development Lifecycle", weight:2,
+    note:"Software verification evidence that clinical evaluation will reference, not replace.",
+    crit:["[ED] Software verification results distinguished from clinical performance results in the file"]},
+  {id:"cl-clinpath", name:"Clinical Data Pathway (per Profiler)", weight:4,
+    note:"Active pathway shown in §1 Profiler — own data / equivalence / literature / legacy each carry different evidentiary burden.",
+    crit:["[REG·EU MDR Art.61] Chosen clinical pathway's evidentiary basis documented and justified",
+          "[GUID·MDCG 2020-5] For equivalence: technical/biological/clinical equivalence criteria addressed",
+          "[ED] Post-market clinical follow-up (PMCF) plan addresses AI-specific performance drift monitoring"]},
+  {id:"cl-product", name:"Medical Device at Product Level", weight:3,
+    note:"Where clinical evidence closes the loop into the QMS-level clinical evaluation report / clinical evidence file.",
+    crit:["[ED] CER/clinical evidence file explicitly references the AI Development Lifecycle performance evidence",
+          "[REG·EU MDR Annex I §1-8] Benefit-risk conclusion accounts for AI-specific residual risks, not only device-level risks"]},
+];
+function renderClinical(){
+  let html='';
+  CLINICAL_LAYERS.forEach(r=>{
+    const critHtml = r.crit.map((c,i)=>evRow(c, r.id, i)).join('');
+    html += `
+      <div class="ring" id="ring-${r.id}">
+        <div class="ring-head">
+          <b>${r.name}</b>
+          <span class="pct bad" id="pct-${r.id}">0%</span>
+        </div>
+        <div class="small">Weight: <span class="mono">${r.weight}</span> · items: ${r.crit.length}</div>
+        <div class="small" style="margin-top:6px;">${r.note}</div>
+        <div class="ring-crit">${critHtml}</div>
+      </div>`;
+  });
+  document.getElementById('clinicalOut').innerHTML = html + `
+    <div class="foot-note" style="margin-top:4px;">Standards/guidance referenced: MDCG 2020-5 (equivalence), MDCG 2020-1 (SaMD clinical evaluation), IMDRF N41 (SaMD clinical evaluation), FDA GMLP 10 principles. For full CER/PMCF/PSUR-level depth, use <b>ClinicalCompass</b>.</div>`;
+}
+renderClinical();
+
+/* ---------- EU AI ACT OVERLAY ---------- */
+const AIACT_OBLIGATIONS = [
+  {group:"Risk management", control:"ISO 14971 risk file (§2 Product ring) + ISO/TS 24971-2 ML-specific risks (§2 AI Development ring)", evidence:"§2 rings"},
+  {group:"Data and data governance", control:"AI Data Management Lifecycle ring (§2) — provenance, quality, representativeness criteria", evidence:"§2 AI Data ring"},
+  {group:"Technical documentation", control:"Interface/traceability records (§5) + this tool's overall applicability matrix (§1)", evidence:"§5"},
+  {group:"Record-keeping / logging", control:"Configuration-status-visibility interface (§5) + version control criteria (§2 AI Data/AI Development)", evidence:"§5, §2"},
+  {group:"Transparency to deployers/users", control:"Not currently mapped to an existing control — genuine delta", evidence:"none yet — gap"},
+  {group:"Human oversight", control:"Adaptive/continuous-learning profile field (§1) implies human oversight expectation, but no dedicated criterion exists yet", evidence:"partial — §1 only"},
+  {group:"Accuracy / robustness", control:"Performance evaluation protocol criterion (§2 AI Development ring)", evidence:"§2 AI Development ring"},
+  {group:"Cybersecurity", control:"Cybersecurity Cross-Link module (§6b)", evidence:"§6b"},
+  {group:"QMS integration", control:"QMS &amp; AI-MS Overlay (§6)", evidence:"§6"},
+  {group:"Postmarket monitoring", control:"Change &amp; Postmarket Control module (§6e)", evidence:"§6e"},
+];
+function renderAiAct(){
+  const applies = document.getElementById('p-aiact-applies')?.value || 'undetermined';
+  const tier = document.getElementById('p-aiact-tier')?.value || 'undetermined';
+  const art6 = document.getElementById('p-aiact-art6')?.value || 'undetermined';
+  const tierLabels = {undetermined:"Undetermined",annex3:"High-risk — Annex III (deferred to 2 Dec 2027)",annex1:"High-risk — Annex I embedded (deferred to 2 Aug 2028)",limited:"Limited-risk (Art.50 transparency only)",minimal:"Minimal/no risk-tier obligations"};
+  const appliesLabels = {undetermined:"Undetermined — insufficient information",yes:"Yes — potentially applicable",no:"No — not applicable / excluded"};
+  const art6Labels = {undetermined:"Not yet determined",'art6-1':"Art.6(1) — Annex I sectorial (e.g. medical devices) + NB conformity assessment",'art6-2':"Art.6(2) — Annex III standalone",'not-highrisk':"Not high-risk under Article 6"};
+  document.getElementById('aiActApplicabilityOut').innerHTML = `
+    <div class="ring">
+      <div class="row"><b>AI Act applicability</b><span class="pct ${applies==='undetermined'?'mid':applies==='yes'?'bad':'good'}">${appliesLabels[applies]}</span></div>
+      <div class="row" style="margin-top:8px;"><b>Risk tier</b><span class="pct ${tier==='undetermined'?'mid':'bad'}">${tierLabels[tier]}</span></div>
+      <div class="row" style="margin-top:8px;"><b>Article 6 route</b><span class="pct ${art6==='undetermined'?'mid':'bad'}">${art6Labels[art6]}</span></div>
+      <div class="small" style="margin-top:8px;">Set in §1 Profiler. EU device class does not by itself determine AI Act tier — kept as an independent axis rather than inferred. Article 6 routing shown here is high-level only, not a legal determination.</div>
+    </div>`;
+  let rows = `<tr><th>AI Act obligation group</th><th>Mapped existing control</th><th>Evidence location</th></tr>`;
+  AIACT_OBLIGATIONS.forEach(o=>{
+    const isGap = o.evidence.includes('gap') || o.evidence.includes('partial');
+    rows += `<tr style="${isGap?'background:var(--warn-bg);':''}"><td><b>${o.group}</b></td><td>${o.control}</td><td class="mono">${o.evidence}</td></tr>`;
+  });
+  document.getElementById('aiActTable').innerHTML = rows;
+}
+renderAiAct();
+
+/* ---------- CHANGE & POSTMARKET CONTROL ---------- */
+const POSTMARKET_LAYERS = [
+  {id:"pm-perf", name:"Performance Monitoring", weight:4,
+    note:"Ongoing confirmation the model performs as validated, not just at release.",
+    crit:["[GUID·FDA GMLP] Clinically relevant performance metrics tracked post-deployment","[ED] Subgroup/population performance monitored (not only aggregate)","[REG·EU MDR Art.83-86] Real-world performance monitoring process defined"]},
+  {id:"pm-drift", name:"Drift", weight:4,
+    note:"Detecting when the world the model sees has changed from what it was trained/validated on.",
+    crit:["[GUID·IMDRF GMLP] Input/data drift detection process defined","[ED] Concept or population drift detection process defined","[ED] Acquisition-system or site/domain shift monitoring considered"]},
+  {id:"pm-trigger", name:"Change Triggers", weight:3,
+    note:"What conditions actually initiate a review or update.",
+    crit:["[ED] Performance-threshold breach defined as a change trigger","[REG·EU MDR Art.87] Safety-signal / complaint-trend trigger defined","[ED] Supplier or foundation-model change trigger defined"]},
+  {id:"pm-retrain", name:"Retraining Control", weight:3,
+    note:"Governance over how a retrained model gets from candidate to production.",
+    crit:["[ED] Retraining authorization process defined","[ED] Data qualification criteria for retraining data defined","[GUID·FDA PCCP guidance] Predetermined acceptance criteria for the retrained model defined"]},
+  {id:"pm-rollback", name:"Rollback / Reversion", weight:3,
+    note:"The ability to undo a bad model update in the field.",
+    crit:["[ED] Previous validated model version retained and deployable","[ED] Rollback authorization and criteria defined","[ED] Field deployment mechanism for rollback exists"]},
+  {id:"pm-pmscapa", name:"PMS / CAPA Integration", weight:3,
+    note:"Connecting model-specific monitoring into the manufacturer's existing quality processes.",
+    crit:["[REG·EU MDR Art.83-86] Complaints/vigilance process explicitly covers AI-specific issues","[STD·ISO 13485 §8.5] CAPA process can trigger from AI performance/drift signals","[STD·ISO 14971] Postmarket risk-management file updated from AI monitoring data"]},
+  {id:"pm-retire", name:"Retirement", weight:2,
+    note:"Planned decommissioning, not just abandonment.",
+    crit:["[ED] Model/dataset retirement criteria defined","[ED] Unsupported external dependency (e.g. discontinued foundation model) handling planned","[ED] Field communication and record-retention plan for retirement exists"]},
+];
+function pccpStatus(){
+  const ai = document.getElementById('p-ai')?.value || 'locked';
+  const mod = document.getElementById('p-modstrategy')?.value || 'manual';
+  // Deterministic combination table — independent axes, not AI-type alone
+  if(mod==='unknown') return {state:'undetermined', text:"Unable to determine — planned modification strategy not yet defined."};
+  if(mod==='none') return {state:'not_indicated', text:"PCCP not currently indicated — no planned postmarket model modification declared."};
+  if(ai==='continuous' || ai==='adaptive') return {state:'applicable', text:"PCCP potentially applicable — continuous/adaptive AI presence combined with a planned modification strategy."};
+  if(mod==='manual' || mod==='periodic' || mod==='autoglobal' || mod==='localadaptive') return {state:'applicable', text:"PCCP potentially applicable — a locked model with a planned postmarket modification process can still warrant PCCP analysis (FD&C Act §515C is not limited to autonomously-learning systems)."};
+  if(mod==='thirdparty') return {state:'analysis_required', text:"PCCP analysis required — update behavior sits outside manufacturer direct control; manufacturer-side change-control obligations still need explicit assessment."};
+  return {state:'undetermined', text:"Unable to determine from current profile."};
+}
+function renderPostmarket(){
+  const pccp = pccpStatus();
+  const pccpClass = {applicable:'warn', analysis_required:'danger', not_indicated:'ok', undetermined:'pending'}[pccp.state];
+  document.getElementById('pccpStatusOut').innerHTML = `
+    <div class="ring">
+      <div class="row"><b>PCCP status</b><span class="status-tag" style="background:var(--${pccpClass}-bg);color:var(--${pccpClass});">${pccp.state.replace('_',' ').toUpperCase()}</span></div>
+      <div class="small" style="margin-top:6px;">${pccp.text}</div>
+      <div class="small" style="margin-top:4px;">Driven independently by §1 AI presence AND Planned Modification Strategy — not by AI type alone.</div>
+    </div>`;
+  let html='';
+  POSTMARKET_LAYERS.forEach(r=>{
+    const critHtml = r.crit.map((c,i)=>evRow(c, r.id, i)).join('');
+    html += `
+      <div class="ring" id="ring-${r.id}">
+        <div class="ring-head"><b>${r.name}</b><span class="pct bad" id="pct-${r.id}">0%</span></div>
+        <div class="small">Weight: <span class="mono">${r.weight}</span> · items: ${r.crit.length}</div>
+        <div class="small" style="margin-top:6px;">${r.note}</div>
+        <div class="ring-crit">${critHtml}</div>
+      </div>`;
+  });
+  document.getElementById('postmarketOut').innerHTML = html;
+}
+renderPostmarket();
+
+/* ---------- LIVE STANDARDS FILTERING BY PROFILE ---------- */
+function standardApplies(s, ai, hw){
+  const aiOnly = ["IEC PAS 63621:2026","ISO/TS 24971-2:2026","ISO/IEC 42001","EN 18286:2026","IEC 63450","IEC 63521","IEC TS 62366-3","IEC/IEEE 63685"];
+  const hwOnly = ["IEC 60601 series"];
+  if(ai==='none' && aiOnly.includes(s.doc)) return false;
+  if(hw==='none' && hwOnly.includes(s.doc)) return false;
+  return true;
+}
+
+/* ---------- GLOSSARY ---------- */
+const GLOSSARY = [
+  ["SaMD","Software as a Medical Device — software that is itself the medical device, not just a component of one."],
+  ["SOUP","Software of Unknown Provenance — third-party or off-the-shelf software (including foundation models) not developed under the manufacturer's own quality system."],
+  ["GSPR","General Safety and Performance Requirements — the core EU MDR checklist every device must satisfy (MDR Annex I)."],
+  ["CER","Clinical Evaluation Report — the EU document demonstrating a device's clinical safety and performance."],
+  ["PMCF","Post-Market Clinical Follow-up — ongoing clinical data collection after a device is on the market."],
+  ["PMS","Post-Market Surveillance — ongoing monitoring of a device's real-world safety and performance."],
+  ["PSUR","Periodic Safety Update Report — a scheduled EU MDR report summarising post-market safety data."],
+  ["PCCP","Predetermined Change Control Plan — an FDA mechanism letting a manufacturer pre-authorise specific future AI model updates without a new submission."],
+  ["QMS","Quality Management System — the manufacturer's overall process framework (ISO 13485)."],
+  ["AI-MS","AI Management System — a governance framework specifically for AI systems (ISO/IEC 42001)."],
+  ["MDCG","Medical Device Coordination Group — issues official EU MDR guidance documents."],
+  ["IMDRF","International Medical Device Regulators Forum — issues globally-referenced guidance, including on SaMD and Good Machine Learning Practice."],
+  ["GMLP","Good Machine Learning Practice — 10 guiding principles for developing safe, effective ML-based medical devices."],
+  ["510(k)","An FDA premarket pathway showing a device is substantially equivalent to one already legally marketed."],
+  ["De Novo","An FDA pathway for novel low-to-moderate-risk devices with no existing equivalent."],
+  ["PMA","Premarket Approval — the FDA's most rigorous pathway, for higher-risk devices."],
+  ["IEC 62304","The standard governing the medical device software development lifecycle (safety classes A/B/C)."],
+  ["ISO 14971","The core standard for medical device risk management."],
+  ["ISO 13485","The core standard for a medical device manufacturer's quality management system."],
+  ["SBOM","Software Bill of Materials — a full inventory list of software components, used for vulnerability tracking."],
+  ["LLM","Large Language Model — a generative AI model trained on text; distinct from traditional ML in how current risk-management standards treat it (see §0 Scope)."],
+  ["Evidence state","This tool's replacement for a simple checkbox — each criterion is marked Not assessed / Evidence available / Partial / Gap / Not applicable / Unable to determine / Accepted residual limitation, so a checked box always means something specific."],
+  ["Critical gate","A small set of non-compensatory checks (§7) — if any gate fails, the overall readiness cannot show Green regardless of how high other scores are."],
+  ["Readiness dimension","One of four separate scores (§7): Lifecycle Completeness, Evidence Strength, Interface Coherence, Change Readiness — kept apart rather than blended into one number."],
+  ["AI Act","Regulation (EU) 2024/1689 — the EU's horizontal AI regulation; intersects with but is legally distinct from the MDR. See §6d."],
+  ["Annex III (AI Act)","The AI Act's list of standalone high-risk AI use cases; obligations deferred to 2 Dec 2027 by the Digital Omnibus."],
+  ["Annex I (AI Act)","The AI Act's category for high-risk AI embedded in products already regulated elsewhere (e.g. medical devices); obligations deferred to 2 Aug 2028."],
+  ["Drift","When a deployed model's real-world inputs or performance diverge from what it was trained/validated on — covered in §6e."],
+  ["Rollback","The ability to revert a fielded device to a previously validated model version if an update causes problems — covered in §6e."],
+  ["Foundation model","A large, general-purpose AI model (often trained by a third party) adapted or fine-tuned for a specific use — commonly treated as SOUP."],
+];
+function renderGlossary(){
+  let rows = `<tr><th>Term</th><th>Plain-language definition</th></tr>`;
+  GLOSSARY.sort((a,b)=>a[0].localeCompare(b[0])).forEach(g=>{
+    rows += `<tr><td class="mono"><b>${g[0]}</b></td><td>${g[1]}</td></tr>`;
+  });
+  document.getElementById('glossaryTable').innerHTML = rows;
+}
+renderGlossary();
+
+/* ---------- INIT ---------- */
+(function(){
+  const d = new Date();
+  const iso = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const el = document.getElementById('p-assessdate');
+  if(el && !el.value) el.value = iso;
+})();
+applyProfile();
+renderCyber();
+</script>
+</body>
+</html>
