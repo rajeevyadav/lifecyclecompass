@@ -312,7 +312,7 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:3px soli
     </p>
     <hr class="sep">
     <h3 style="font-size:13.5px;margin-bottom:6px;">Version history</h3>
-    <p class="small">v2.0.0-rc3 (this build): rule-provenance tags on every criterion, assessment-date staleness flagging, Article 6 AI Act routing field, FDA cybersecurity citation corrected to the 27 Jun 2025 final guidance (was citing the superseded 2023 version).<br>
+    <p class="small">v2.0.0-rc4 (this build): rule-provenance tags on every criterion, assessment-date staleness flagging, Article 6 AI Act routing field, FDA cybersecurity citation corrected to the 27 Jun 2025 final guidance, and deterministic-core regression coverage added.<br>
     v2.0.0-rc2: P0 architecture revision — evidence states replacing checkboxes, non-compensatory critical gates, 4-dimension readiness dashboard, PCCP redesign, EU AI Act Overlay tab, Change &amp; Postmarket Control tab, JSON export.<br>
     v2.0.0-rc1: added Scope &amp; Limitations tab, Glossary, PCCP criterion, LLM/generative-AI scope flag, print stylesheet, accessibility pass, jurisdiction-scope disclosure.<br>
     v1.0.0-rc1: cybersecurity + clinical cross-links added, standards re-verified, duplicate SOUP checklist reconciled.<br>
@@ -855,6 +855,8 @@ const STANDARDS = [
   {doc:"IEC 63521", title:"AI/ML-enabled Medical Device — Performance Evaluation Process", status:"draft", layer:"Performance evaluation", verified:"2026-08-22", note:"Confirmed still under development as of this verification pass"},
   {doc:"IEC/IEEE 63685", title:"Post-market surveillance of machine-learning-enabled medical devices", status:"draft", layer:"Product level / PMS", verified:"2026-08-22", note:"Newly added — under development. Directly relevant to the Product-level ring's PMS criterion."},
   {doc:"IEC TS 62366-3", title:"Usability engineering — guidance for AI-based medical devices", status:"draft", layer:"All layers (usability, AI-specific)", verified:"2026-08-22", note:"Newly added — under development. Extends IEC 62366-1 with AI-specific usability guidance."},
+  {doc:"IEC 81001-5-1", title:"Health software and health IT systems safety, effectiveness and security — security activities in the product life cycle", status:"published", layer:"Software Development Lifecycle / Cybersecurity", verified:"2026-08-22"},
+  {doc:"FDA Cybersecurity Guidance (27 Jun 2025)", title:"Cybersecurity in Medical Devices: Quality System Considerations and Content of Premarket Submissions", status:"published", layer:"Software Development Lifecycle / Cybersecurity", verified:"2026-08-22", note:"Final FDA guidance; verify whether a newer edition has superseded it by the assessment date."},
 ];
 function statusClass(s){ if(s==='published') return 'published'; if(s==='pas') return 'pas'; return 'draft'; }
 function renderStandards(){
@@ -1262,7 +1264,7 @@ function exportCSV(){
 function exportJSON(){
   const d = window._lcExportData || {};
   const payload = {
-    toolVersion: "v2.0.0-rc3",
+    toolVersion: "v2.0.0-rc4",
     rulesetVersion: "LC-RULESET-2026.08.22.4",
     standardsSnapshot: "2026-08-22",
     assessmentDate: d.assessDate || '',

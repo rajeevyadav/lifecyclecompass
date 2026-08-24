@@ -35,9 +35,11 @@ model, critical gates, standards library, and published HTML artifact.
 
 ## 3. Branch protection and commit standard
 
-- `main` requires a pull request and at least one human review before merge.
-  Direct pushes, force-pushes, and branch deletion are disabled, including for
-  administrators where GitHub permits enforcement.
+- `main` requires a pull request and review before merge. As a solo-maintainer
+  repository, it does not require approval from someone other than the last
+  pusher; the maintainer remains responsible for reviewing and merging each
+  change. Direct pushes, force-pushes, and branch deletion are disabled,
+  including for administrators where GitHub permits enforcement.
 - Only Rajeev Yadav may push or merge changes to `main`. Require signed commits
   verified against Rajeev Yadav's configured GPG key.
 - Required checks must pass before merge: restricted-file/secrets guard,
