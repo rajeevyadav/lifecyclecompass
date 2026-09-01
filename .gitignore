@@ -1,2 +1,25 @@
-# Local working reports and director notes
-docs/
+# Internal process artifacts — NEVER commit to this PUBLIC repo.
+# Directives (D-NNN), reports (R-NNN), governance notes, and director notes stay
+# local only (same convention as the other Compass repos).
+/reports/
+/directives/
+/docs/
+R-[0-9]*.md
+D-[0-9]*.md
+*-Directive.md
+*-Directive.md.*
+GOVERNANCE.md
+*.bak
+
+# Dependencies / build outputs
+/node_modules/
+/www/
+/dist/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+*~
+.vscode/
+.idea/

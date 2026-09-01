@@ -1,0 +1,26 @@
+# "No embedded AI" guard — LifecycleCompass's compliance logic contains no AI/ML
+# code, no copilot/chatbot, and no AI-provider API calls. Fails the build if a
+# future commit introduces one in shipped app/build source. (The AI Act overlay
+# TEXT may mention AI — only shipped/run files are scanned.)
+name: No embedded AI check
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan shipped source for AI-provider / assistant references
+        run: |
+          set -e
+          FILES=$(find . -type f \( -name '*.html' -o -name '*.js' -o -name '*.cjs' -o -name '*.mjs' \) \
+            -not -path './node_modules/*' -not -path './.git/*' 2>/dev/null)
+          PATTERN='openai\.com|anthropic\.com|api\.anthropic|copilot|chatgpt|claude-[a-z0-9-]*\.(js|json)|@anthropic-ai|@openai|langchain|tensorflow|onnxruntime|huggingface'
+          HIT=0
+          for f in $FILES; do if grep -EinH "$PATTERN" "$f"; then HIT=1; fi; done
+          if [ "$HIT" -eq 1 ]; then
+            echo "::error::AI provider/assistant/ML reference found in shipped source."; exit 1; fi
+          echo "Clean — no embedded AI/ML references."

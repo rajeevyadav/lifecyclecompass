@@ -12,4 +12,4 @@ Automated regression tests and build-time integrity stamping are planned before 
 
 Run the current regression suite with `npm test`.
 
-See [LifecycleCompass-D-001-Directive.md](LifecycleCompass-D-001-Directive.md) and [GOVERNANCE.md](GOVERNANCE.md) for scope, guardrails, and verification requirements.
+This is a single-committer project; every change lands through a reviewed, GPG-signed pull request. Licensed under [MIT](LICENSE).
