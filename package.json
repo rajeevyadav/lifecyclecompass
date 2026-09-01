@@ -1,10 +1,36 @@
 {
   "name": "lifecyclecompass",
+  "productName": "LifecycleCompass",
+  "version": "2.0.0-rc4",
   "private": true,
+  "description": "LifecycleCompass — offline, deterministic decision-support for AI-enabled medical-device lifecycle traceability (FDA + EU MDR).",
+  "author": "Rajeev Yadav <rajeevyadav@gmail.com>",
+  "license": "MIT",
+  "main": "electron/main.js",
   "scripts": {
-    "test": "node --test tests/core.test.cjs"
+    "test": "node --test tests/core.test.cjs",
+    "make-www": "node scripts/make-www.js",
+    "start": "npm run make-www && electron .",
+    "dist:win": "npm run make-www && electron-builder --win",
+    "dist:mac": "npm run make-www && electron-builder --mac",
+    "dist:linux": "npm run make-www && electron-builder --linux",
+    "dist": "npm run make-www && electron-builder"
   },
-  "engines": {
-    "node": ">=20"
+  "engines": { "node": ">=20" },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.rajeevyadav.lifecyclecompass",
+    "productName": "LifecycleCompass",
+    "copyright": "© 2026 Rajeev Yadav",
+    "files": ["electron/**", "www/**"],
+    "directories": { "output": "dist", "buildResources": "build" },
+    "win": { "target": [ { "target": "nsis", "arch": ["x64"] }, { "target": "portable", "arch": ["x64"] } ] },
+    "nsis": { "oneClick": false, "perMachine": false, "allowElevation": false, "allowToChangeInstallationDirectory": true, "artifactName": "LifecycleCompass-Setup.${ext}" },
+    "portable": { "artifactName": "LifecycleCompass-Portable.${ext}" },
+    "mac": { "target": ["dmg"], "category": "public.app-category.medical", "artifactName": "LifecycleCompass.${ext}" },
+    "linux": { "target": ["AppImage"], "category": "Utility", "artifactName": "LifecycleCompass.${ext}" }
   }
 }

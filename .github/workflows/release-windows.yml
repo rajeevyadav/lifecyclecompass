@@ -1,0 +1,27 @@
+# LifecycleCompass — Windows release build. Runs on a version tag (e.g.
+# v2.0.0-rc4) and builds the per-user installer + portable exe, attaching both to
+# the GitHub Release as a DRAFT (a human publishes it from the Releases tab).
+# Human-triggered (tag push) and human-published — CI never releases on its own.
+name: Build Windows release
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
+      - name: Assemble www/
+        run: npm run make-www
+      - name: Build and publish Windows exe
+        run: npx electron-builder --win --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
