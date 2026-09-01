@@ -3,11 +3,56 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="refresh" content="0; url=./lifecyclecompass.html">
-<title>LifecycleCompass</title>
-<link rel="canonical" href="./lifecyclecompass.html">
+<title>LifecycleCompass — AI-Enabled Medical-Device Lifecycle Traceability</title>
+<meta name="description" content="Offline, deterministic decision-support for AI-enabled medical-device lifecycle traceability (FDA + EU MDR). No AI in the assessment logic.">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+  :root{ --indigo:#5b47e0; --indigo-2:#8b7cf0; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:#0e0f13;color:#e9e9f2;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:40px 20px 64px;text-align:center}
+  .brand{display:inline-flex;align-items:center;gap:12px;margin-bottom:8px}
+  .brand img{width:44px;height:44px;border-radius:10px}
+  h1{font-size:1.9rem;margin:.2rem 0 .1rem;letter-spacing:-.01em}
+  .tag{color:#b9b9cc;font-size:1.02rem;margin:0 auto 4px;max-width:760px}
+  .rc{display:inline-block;margin-top:10px;font-size:.78rem;color:#cdb8ff;border:1px solid #3a3560;background:#1b1830;border-radius:999px;padding:4px 12px}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:26px 0 8px}
+  .btn{text-decoration:none;font-weight:700;font-size:.95rem;padding:12px 20px;border-radius:10px}
+  .btn.primary{background:var(--indigo);color:#fff}
+  .btn.ghost{border:1px solid #34344a;color:#e9e9f2}
+  figure{margin:30px 0 0}
+  figure img{width:100%;height:auto;border-radius:14px;background:#fff;border:1px solid #23233a;box-shadow:0 10px 40px rgba(0,0,0,.4)}
+  figcaption{color:#8f8fa6;font-size:.82rem;margin-top:10px}
+  .note{color:#8f8fa6;font-size:.82rem;margin-top:22px;max-width:760px;margin-left:auto;margin-right:auto}
+  .note a{color:var(--indigo-2)}
+</style>
 </head>
-<body style="font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0e0f13;color:#e9e9f2;display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0">
-  <p>Opening <strong>LifecycleCompass</strong>… if it doesn't load, <a href="./lifecyclecompass.html" style="color:#8b7cf0">open it here →</a></p>
+<body>
+  <div class="wrap">
+    <div class="brand"><img src="icon.svg" alt=""><span></span></div>
+    <h1>LifecycleCompass</h1>
+    <p class="tag">Offline, deterministic decision-support for mapping and tracing the <b>nested development and lifecycle processes of AI-enabled medical devices</b> — FDA + EU MDR. No AI in the assessment logic; every rule is human-authored and readable.</p>
+    <div class="rc">Prototype · current build v2.0.0-rc4</div>
+
+    <div class="cta">
+      <a class="btn primary" href="./lifecyclecompass.html">Open the tool →</a>
+      <a class="btn ghost" href="https://github.com/rajeevyadav/lifecyclecompass/releases">⤓ Windows installer &amp; portable</a>
+      <a class="btn ghost" href="https://github.com/rajeevyadav/lifecyclecompass">View on GitHub</a>
+    </div>
+
+    <figure>
+      <img src="assets/lifecycle-diagram-hero.png"
+           alt="Nested lifecycle diagram of an AI-enabled medical device — six concentric layers from AI Data Management to Medical Device Product level, with standards call-outs and SOUP/foundation-model handling.">
+      <figcaption>The nested lifecycle model, from the AI data-management core out to the medical device at product level. The <a href="./lifecyclecompass.html">live tool</a> renders this interactively and dims the rings to match your device/AI profile.</figcaption>
+    </figure>
+
+    <p class="note">Decision-support only — not a conformity assessment, certification pathway, legal opinion, or substitute for qualified regulatory judgment. Part of the Compass family:
+      <a href="https://rajeevyadav.github.io/regcompass/">RegCompass</a> ·
+      <a href="https://rajeevyadav.github.io/cybercompass/">CyberCompass</a> ·
+      <a href="https://rajeevyadav.github.io/eifucompass/">eIFUCompass</a> ·
+      <a href="https://rajeevyadav.github.io/clinicalcompass/">ClinicalCompass</a>.
+    </p>
+  </div>
 </body>
 </html>

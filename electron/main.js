@@ -11,7 +11,8 @@ function createWindow() {
     webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true }
   });
   Menu.setApplicationMenu(null);
-  win.loadFile(path.join(__dirname, '..', 'www', 'index.html'));
+  // Desktop opens straight into the tool; index.html is the web landing page.
+  win.loadFile(path.join(__dirname, '..', 'www', 'lifecyclecompass.html'));
   win.webContents.setWindowOpenHandler(({ url }) => {
     if (/^https?:\/\//i.test(url)) { shell.openExternal(url); return { action: 'deny' }; }
     return { action: 'allow' };

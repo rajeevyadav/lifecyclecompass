@@ -19,6 +19,17 @@ lifecycles up to the medical device at product level. It is **decision-support o
 conformity assessment**, and its assessment logic is entirely human-authored: **no AI, no
 black-box inference**. Everything runs on your device and works fully offline.
 
+## How it works
+
+![Nested lifecycle diagram of an AI-enabled medical device — six concentric layers from AI Data Management to Medical Device Product level, with standards call-outs and SOUP/foundation-model handling.](assets/lifecycle-diagram-hero.png)
+
+LifecycleCompass models an AI-enabled medical device as **six nested lifecycles** — from the AI
+data-management core, out through AI development, software development, the software system, the
+software system with hardware, to the medical device at product level — with the relevant standards
+called out at each layer and SOUP / foundation-model handling made explicit. The image above is an
+architectural reference (not to scale); the [live tool](https://rajeevyadav.github.io/lifecyclecompass/)
+renders it interactively and dims the rings to match your device/AI profile.
+
 ## Where it sits in the Compass family
 
 Part of the same family — same guardrails, same offline-first, no-black-box-AI philosophy:
