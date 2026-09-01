@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1040" font-family="-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
+  <defs>
+    <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#3a3f4b"/>
+    </marker>
+    <radialGradient id="core" cx="50%" cy="45%" r="65%">
+      <stop offset="0" stop-color="#f6b64e"/><stop offset="1" stop-color="#e79320"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1040" fill="#ffffff"/>
+
+  <!-- ===================== nested rings ===================== -->
+  <g stroke-width="2.5">
+    <circle cx="770" cy="482" r="305" fill="#eef0f5" stroke="#c3c9d4"/>
+    <circle cx="770" cy="482" r="264" fill="#e4e7ef" stroke="#c3c9d4"/>
+    <circle cx="770" cy="482" r="223" fill="#e9eafb" stroke="#8b7cf0"/>
+    <circle cx="770" cy="482" r="182" fill="#fdf1d6" stroke="#e0a83a"/>
+    <circle cx="770" cy="482" r="134" fill="#fbe1d3" stroke="#e07a4a"/>
+    <circle cx="770" cy="482" r="84"  fill="url(#core)" stroke="#d98a1f"/>
+  </g>
+  <g text-anchor="middle" fill="#28303f" font-weight="700">
+    <text x="770" y="212" font-size="21">Medical Device at Product Level</text>
+    <text x="770" y="250" font-size="20">Software System with Hardware</text>
+    <text x="770" y="289" font-size="20" fill="#4636b8">Software System Lifecycle</text>
+    <text x="770" y="333" font-size="20" fill="#a9741a">Software Development Lifecycle</text>
+    <text x="770" y="381" font-size="19" fill="#b05a2c">AI Development Lifecycle</text>
+    <text x="770" y="470" font-size="19" fill="#ffffff">AI Data</text>
+    <text x="770" y="493" font-size="19" fill="#ffffff">Management</text>
+    <text x="770" y="516" font-size="19" fill="#ffffff">Lifecycle</text>
+  </g>
+
+  <!-- ===================== top governance boxes ===================== -->
+  <g font-size="20" text-anchor="middle">
+    <rect x="322" y="28" width="372" height="104" rx="8" fill="#fff" stroke="#3a3f4b" stroke-width="2"/>
+    <text x="508" y="62" font-weight="700" fill="#28303f">AI Management Lifecycle</text>
+    <text x="508" y="90" font-size="15" fill="#5a6472">(healthcare-specific version of</text>
+    <text x="508" y="112" font-size="15" fill="#5a6472">ISO 42001 — in development)</text>
+
+    <rect x="878" y="28" width="330" height="104" rx="8" fill="#fff" stroke="#3a3f4b" stroke-width="2"/>
+    <text x="1043" y="72" font-weight="700" fill="#28303f">ISO 13485 Quality</text>
+    <text x="1043" y="98" font-weight="700" fill="#28303f">Management System</text>
+  </g>
+  <line x1="694" y1="80" x2="878" y2="80" stroke="#3a3f4b" stroke-width="2" stroke-dasharray="7 7"/>
+  <path d="M508 132 L508 168 L640 168 L640 196" fill="none" stroke="#3a3f4b" stroke-width="2" marker-end="url(#arw)"/>
+  <path d="M1043 132 L1043 168 L905 168 L905 196" fill="none" stroke="#3a3f4b" stroke-width="2" marker-end="url(#arw)"/>
+
+  <!-- ===================== left standards call-outs ===================== -->
+  <g font-size="18" text-anchor="middle" fill="#28303f">
+    <rect x="60" y="300" width="232" height="66" rx="7" fill="#fff" stroke="#3a3f4b" stroke-width="2"/>
+    <text x="176" y="340" font-weight="600">ISO 60601 series</text>
+
+    <rect x="60" y="410" width="232" height="76" rx="7" fill="#e6f3e7" stroke="#3a3f4b" stroke-width="2"/>
+    <text x="176" y="444" font-weight="600">IEC 82304</text>
+    <text x="176" y="468" font-size="16">Software Validation</text>
+
+    <rect x="60" y="520" width="232" height="76" rx="7" fill="#e6f3e7" stroke="#3a3f4b" stroke-width="2"/>
+    <text x="176" y="554" font-weight="600">IEC 62304</text>
+    <text x="176" y="578" font-size="16">Health Software SDLC</text>
+
+    <rect x="60" y="636" width="232" height="92" rx="7" fill="#fff" stroke="#3a3f4b" stroke-width="2"/>
+    <text x="176" y="670" font-weight="600">AI Healthcare</text>
+    <text x="176" y="692" font-size="16">Specific Standards,</text>
+    <text x="176" y="714" font-size="16">e.g. IEC 63450</text>
+  </g>
+  <path d="M292 333 L470 333" fill="none" stroke="#3a3f4b" stroke-width="2" marker-end="url(#arw)"/>
+  <path d="M292 448 L505 448" fill="none" stroke="#3a3f4b" stroke-width="2" marker-end="url(#arw)"/>
+  <path d="M292 558 L560 558" fill="none" stroke="#3a3f4b" stroke-width="2" marker-end="url(#arw)"/>
+  <path d="M292 682 L615 640" fill="none" stroke="#3a3f4b" stroke-width="2" marker-end="url(#arw)"/>
+
+  <!-- ===================== right flow: integrated software system, SOUP, product ===================== -->
+  <g text-anchor="middle">
+    <circle cx="1392" cy="470" r="64" fill="#fff" stroke="#3a3f4b" stroke-width="2"/>
+    <text x="1392" y="462" font-size="17" fill="#28303f">Integrated</text>
+    <text x="1392" y="484" font-size="17" fill="#28303f">Software System</text>
+
+    <circle cx="1300" cy="672" r="66" fill="#e9eafb" stroke="#8b7cf0" stroke-width="2"/>
+    <text x="1300" y="666" font-size="17" font-weight="600" fill="#3a3f4b">SOUP</text>
+    <text x="1300" y="688" font-size="16" fill="#3a3f4b">Software Items</text>
+
+    <circle cx="1408" cy="728" r="52" fill="#f6d0ec" stroke="#d87ac0" stroke-width="2"/>
+    <text x="1408" y="722" font-size="14" fill="#3a3f4b">Foundation</text>
+    <text x="1408" y="740" font-size="14" fill="#3a3f4b">Model as SOUP</text>
+
+    <rect x="1272" y="212" width="232" height="120" rx="8" fill="#fff" stroke="#3a3f4b" stroke-width="2"/>
+    <text x="1388" y="250" font-size="18" font-weight="600" fill="#28303f">Medical Device</text>
+    <text x="1388" y="272" font-size="18" font-weight="600" fill="#28303f">Product</text>
+    <g fill="#fff" stroke="#3a3f4b" stroke-width="1.6">
+      <rect x="1372" y="286" width="26" height="22" rx="2"/>
+      <rect x="1352" y="312" width="26" height="22" rx="2"/><rect x="1380" y="312" width="26" height="22" rx="2"/>
+    </g>
+  </g>
+  <path d="M1075 470 L1326 470" fill="none" stroke="#3a3f4b" stroke-width="2" marker-end="url(#arw)"/>
+  <path d="M1050 640 L1236 665" fill="none" stroke="#3a3f4b" stroke-width="2" marker-end="url(#arw)"/>
+  <path d="M1320 610 L1372 526" fill="none" stroke="#3a3f4b" stroke-width="2" marker-end="url(#arw)"/>
+  <path d="M1392 406 L1392 334" fill="none" stroke="#3a3f4b" stroke-width="2" marker-end="url(#arw)"/>
+  <path d="M1010 262 L1272 262" fill="none" stroke="#3a3f4b" stroke-width="2" marker-end="url(#arw)"/>
+
+  <!-- ===================== bottom: AI data / AI model config items ===================== -->
+  <g text-anchor="middle">
+    <rect x="430" y="866" width="238" height="78" rx="7" fill="#e6e8ee" stroke="#3a3f4b" stroke-width="2"/>
+    <text x="549" y="900" font-size="18" font-weight="600" fill="#28303f">AI Data</text>
+    <text x="549" y="922" font-size="15" fill="#5a6472">(as a configuration item)</text>
+
+    <rect x="828" y="872" width="256" height="72" rx="7" fill="#fdf1d6" stroke="#3a3f4b" stroke-width="2"/>
+    <text x="956" y="904" font-size="18" font-weight="600" fill="#28303f">AI Model(s) as</text>
+    <text x="956" y="926" font-size="16" fill="#28303f">a Software Item(s)</text>
+  </g>
+  <path d="M700 784 L700 830 L549 830 L549 862" fill="none" stroke="#3a3f4b" stroke-width="2" marker-end="url(#arw)"/>
+  <path d="M840 784 L840 830 L956 830 L956 868" fill="none" stroke="#3a3f4b" stroke-width="2" marker-end="url(#arw)"/>
+  <path d="M668 906 L824 906" fill="none" stroke="#3a3f4b" stroke-width="2" marker-end="url(#arw)"/>
+  <path d="M1408 780 L1408 908 L1088 908" fill="none" stroke="#3a3f4b" stroke-width="2" marker-end="url(#arw)"/>
+
+  <text x="770" y="1010" text-anchor="middle" font-size="21" font-style="italic" fill="#5a6472">Nested Lifecycle of an AI-Enabled Medical Device — architectural reference, not to scale</text>
+</svg>
