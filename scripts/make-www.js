@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const root = path.join(__dirname, '..');
 const www = path.join(root, 'www');
-const ASSETS = ['index.html', 'lifecyclecompass.html', 'icon.svg', 'pwa-icon.svg', 'pwa-icon-192.png', 'pwa-icon-512.png'];
+const ASSETS = ['index.html', 'lifecyclecompass.html', 'assets', 'icon.svg', 'pwa-icon.svg', 'pwa-icon-192.png', 'pwa-icon-512.png'];
 fs.rmSync(www, { recursive: true, force: true });
 fs.mkdirSync(www, { recursive: true });
 for (const a of ASSETS) {
