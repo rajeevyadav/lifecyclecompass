@@ -735,7 +735,7 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:3px soli
       <button class="btn2" onclick="exportJSON()">Export JSON</button>
       <button class="btn2 secondary" onclick="window.print()">Print / Export PDF</button>
     </div>
-    <div class="foot-note">Export Compliance File follows the same neutral, professionally-worded query pattern used across the Compass family (DocCompass precedent) — it raises questions for the manufacturer to resolve, it does not assert non-conformity.</div>
+    <div class="foot-note">Export Compliance File follows the same neutral, professionally-worded query pattern used across the Compass family — it raises questions for the manufacturer to resolve, it does not assert non-conformity.</div>
   </div>
 </section>
 
@@ -745,12 +745,17 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:3px soli
     <h2>Compass Family</h2>
     <div class="sub">LifecycleCompass is one tool in a family of free, offline, deterministic (no black-box AI in the assessment logic) decision-support tools. Each is independent — v1.0.0 duplicates rather than imports across tools.</div>
     <div class="footer-links">
-      <div class="fam-card"><b>RegCompass</b>General dual-market (FDA/EU) regulatory navigator — the family's original tool.</div>
-      <div class="fam-card"><b>CyberCompass</b>Deep medical device cybersecurity requirements across 11 jurisdictions.</div>
-      <div class="fam-card"><b>eIFUCompass</b>IFU / labeling / electronic-IFU compliance, FDA + EU MDR.</div>
-      <div class="fam-card"><b>ClinicalCompass</b>Clinical evaluation (EU) / clinical evidence (FDA) navigator.</div>
-      <div class="fam-card"><b>DocCompass</b>Technical documentation completeness &amp; traceability (Annex II/III + STED).</div>
+      <a class="fam-card" href="https://rajeevyadav.github.io/regcompass/" target="_blank" rel="noopener"><b>RegCompass</b>General dual-market (FDA/EU) regulatory navigator — the family's original tool.</a>
+      <a class="fam-card" href="https://rajeevyadav.github.io/cybercompass/" target="_blank" rel="noopener"><b>CyberCompass</b>Deep medical device cybersecurity requirements across 11 jurisdictions.</a>
+      <a class="fam-card" href="https://rajeevyadav.github.io/eifucompass/" target="_blank" rel="noopener"><b>eIFUCompass</b>IFU / labeling / electronic-IFU compliance, FDA + EU MDR.</a>
+      <a class="fam-card" href="https://rajeevyadav.github.io/clinicalcompass/" target="_blank" rel="noopener"><b>ClinicalCompass</b>Clinical evaluation (EU) / clinical evidence (FDA) navigator.</a>
       <div class="fam-card"><b>LifecycleCompass</b><i>This tool.</i> Nested AI/software/product lifecycle traceability.</div>
+    </div>
+    <div style="margin-top:18px;padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:var(--surface,transparent);display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;">
+      <b style="font-size:14px;">Get LifecycleCompass</b>
+      <a href="https://github.com/rajeevyadav/lifecyclecompass/releases" target="_blank" rel="noopener" style="background:#5b47e0;color:#fff;text-decoration:none;font-weight:700;font-size:13px;padding:8px 14px;border-radius:8px;">⤓ Windows installer &amp; portable (Releases)</a>
+      <a href="./lifecyclecompass.html" download style="border:1px solid var(--border);color:inherit;text-decoration:none;font-weight:700;font-size:13px;padding:8px 14px;border-radius:8px;">⤓ Standalone HTML</a>
+      <span style="font-size:11.5px;opacity:.75;flex:1 1 240px;">Current build is a <b>pre-release</b>. The installer is per-user (no admin) and currently unsigned — on the Windows SmartScreen prompt choose “More info → Run anyway”. Or just use it here in your browser.</span>
     </div>
   </div>
 </section>
